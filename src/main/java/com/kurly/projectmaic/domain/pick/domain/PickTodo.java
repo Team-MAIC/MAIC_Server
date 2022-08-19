@@ -21,9 +21,6 @@ public class PickTodo extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pickTodoId;
 
-	@Column(name = "center_id")
-	private Long centerId;
-
     @Column(name = "round_id")
     private Long roundId;
 
