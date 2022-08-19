@@ -34,6 +34,9 @@ public class PickTodo extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private CenterProductArea area;
 
+	@Column(name = "line")
+	private Integer line;
+
     @Column(name = "location")
     private Integer location;
 
