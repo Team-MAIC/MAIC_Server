@@ -1,4 +1,4 @@
-package com.kurly.projectmaic.common.response;
+package com.kurly.projectmaic.global.common.response;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class CustomResponseEntity<T> {
 
     public static <T> CustomResponseEntity<T> success(T data) {
         return new CustomResponseEntity<>(
-                ResponseCode.OK.getCode(), null, data);
+                ResponseCode.OK.getCode(), ResponseCode.OK.getMessage(), data);
     }
 
     public static <T> CustomResponseEntity<T> fail(String message) {
@@ -27,4 +27,8 @@ public class CustomResponseEntity<T> {
                 ResponseCode.FAIL.getCode(),null, null);
     }
 
+    public static <Void> CustomResponseEntity<Void> fail(ResponseCode responseCode) {
+        return new CustomResponseEntity<>(
+                responseCode.getCode(),responseCode.getMessage(), null);
+    }
 }
