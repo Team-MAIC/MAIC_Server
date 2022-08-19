@@ -27,6 +27,9 @@ public class PickTodo extends BaseEntity {
     @Column(name = "product_id")
     private Long productId;
 
+	@Column(name = "product_name")
+	private String productName;
+
     @Column(name = "worker_id")
     private Long workerId;
 
