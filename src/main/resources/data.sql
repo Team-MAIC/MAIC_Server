@@ -145,18 +145,19 @@ VALUES (1, 1, 1, 'A', '11', 5, 'READY');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
 VALUES (1, 2, 2, 'A', '12', 3, 'READY');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
-VALUES (1, 3, 2, 'A', '13', 3, 'READY');
+VALUES (1, 3, 3, 'A', '13', 3, 'READY');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
-VALUES (1, 5, 3, 'B', '21', 4, 'READY');
+VALUES (1, 5, 5, 'B', '21', 4, 'READY');
+
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
-VALUES (2, 3, 11, 'A', '12', 2, 'READY');
+VALUES (2, 2, 1, 'A', '12', 2, 'READY');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
-VALUES (2, 6, 11, 'B', '22', 1, 'READY');
+VALUES (2, 6, 6, 'B', '22', 1, 'READY');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
-VALUES (2, 9, 11, 'C', '33', 3, 'READY');
+VALUES (2, 11, 11, 'C', '33', 3, 'READY');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
-VALUES (3, 10, 11, 'B', '21', 2, 'READY');
+VALUES (3, 5, 7, 'B', '21', 2, 'READY');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
-VALUES (3, 12, 11, 'C', '32', 4, 'READY');
+VALUES (3, 10, 12, 'C', '32', 4, 'READY');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
-VALUES (3, 9, 11, 'C', '34', 4, 'READY');
+VALUES (3, 12, 9, 'C', '34', 4, 'READY');
