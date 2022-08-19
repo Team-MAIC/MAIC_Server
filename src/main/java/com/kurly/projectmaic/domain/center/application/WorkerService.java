@@ -3,15 +3,13 @@ package com.kurly.projectmaic.domain.center.application;
 import com.kurly.projectmaic.domain.center.dao.WorkerRepository;
 import com.kurly.projectmaic.domain.center.domain.Center;
 import com.kurly.projectmaic.domain.center.domain.Worker;
-import com.kurly.projectmaic.domain.center.dto.WorkerInfoResponse;
+import com.kurly.projectmaic.domain.center.dto.response.WorkerInfoResponse;
 import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
 import com.kurly.projectmaic.global.common.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class WorkerService {

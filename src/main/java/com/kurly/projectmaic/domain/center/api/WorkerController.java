@@ -2,7 +2,7 @@ package com.kurly.projectmaic.domain.center.api;
 
 import com.kurly.projectmaic.domain.center.application.WorkerService;
 import com.kurly.projectmaic.domain.center.dto.DeviceTokenUpdateRequest;
-import com.kurly.projectmaic.domain.center.dto.WorkerInfoResponse;
+import com.kurly.projectmaic.domain.center.dto.response.WorkerInfoResponse;
 import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
