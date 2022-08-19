@@ -28,8 +28,8 @@ public class Worker {
     @Enumerated(value = EnumType.STRING)
     private WorkerRole role;
 
-    @Column(name = "passage_id")
-    private Integer passageId;
+    @Column(name = "passage")
+    private Integer passage;
 
     @Column(name = "area")
     @Enumerated(value = EnumType.STRING)
