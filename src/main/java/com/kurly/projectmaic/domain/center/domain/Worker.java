@@ -34,4 +34,11 @@ public class Worker {
     @Column(name = "area")
     @Enumerated(value = EnumType.STRING)
     private CenterProductArea area;
+
+    @Column(name = "device_token")
+    private String deviceToken;
+
+    public void updateDeviceToken(final String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
 }

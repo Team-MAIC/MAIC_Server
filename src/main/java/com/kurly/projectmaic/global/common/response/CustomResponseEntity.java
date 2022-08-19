@@ -22,6 +22,11 @@ public class CustomResponseEntity<T> {
                 ResponseCode.OK.getCode(), ResponseCode.OK.getMessage(), data);
     }
 
+    public static <Void> CustomResponseEntity<Void> success() {
+        return new CustomResponseEntity<>(
+                ResponseCode.OK.getCode(), ResponseCode.OK.getMessage(), null);
+    }
+
     public static <T> CustomResponseEntity<T> fail(String message) {
         return new CustomResponseEntity<>(
                 ResponseCode.FAIL.getCode(),null, null);

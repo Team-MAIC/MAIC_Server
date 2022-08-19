@@ -30,4 +30,7 @@ public class Product extends BaseEntity {
 
     @Column(name = "price")
     private Long price;
+
+    @Column(name = "product_thumbnail")
+    private String productThumbnail;
 }

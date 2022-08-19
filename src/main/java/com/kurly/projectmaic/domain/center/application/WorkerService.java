@@ -9,6 +9,7 @@ import com.kurly.projectmaic.global.common.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -17,6 +18,7 @@ public class WorkerService {
 
     private final WorkerRepository workerRepository;
 
+    @Transactional(readOnly = true)
     public WorkerInfoResponse getWorkerInfo(final long workerId) {
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() ->
@@ -37,5 +39,16 @@ public class WorkerService {
                 worker.getPassage(),
                 worker.getArea()
         );
+    }
+
+    @Transactional
+    public void updateDeviceToken(final long workerId, final String deviceToken) {
+        Worker worker = workerRepository.findById(workerId)
+                .orElseThrow(() ->
+                        new WorkerNotFoundException(ResponseCode.NOT_FOUND_WORKER,
+                                String.format("workerId : %s", workerId)));
+
+        worker.updateDeviceToken(deviceToken);
+        workerRepository.save(worker);
     }
 }
