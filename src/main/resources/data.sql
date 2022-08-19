@@ -102,7 +102,7 @@ VALUES (1, 2, 147000, 'WAIT');
 INSERT INTO order_product (order_info_id, product_id, amount)
 VALUES (1, 1, 5);
 INSERT INTO order_product (order_info_id, product_id, amount)
-VALUES (1, 2, 3);
+VALUES (1, 1, 3);
 INSERT INTO order_product (order_info_id, product_id, amount)
 VALUES (1, 5, 1);
 INSERT INTO order_product (order_info_id, product_id, amount)
@@ -113,3 +113,14 @@ INSERT INTO order_product (order_info_id, product_id, amount)
 VALUES (2, 5, 3);
 INSERT INTO order_product (order_info_id, product_id, amount)
 VALUES (2, 9, 4);
+
+INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
+VALUES (1, 1, 1, 'A', '11', 8, 'READY');
+INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
+VALUES (1, 3, 2, 'A', '13', 3, 'READY');
+INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
+VALUES (1, 5, 6, 'B', '21', 4, 'READY');
+INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
+VALUES (1, 7, 7, 'B', '23', 1, 'READY');
+INSERT INTO pick_todo (round_id, product_id, worker_id, area, location, amount, status)
+VALUES (1, 9, 11, 'C', '31', 4, 'READY');
