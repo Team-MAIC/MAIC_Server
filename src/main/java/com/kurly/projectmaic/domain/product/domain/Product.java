@@ -20,7 +20,7 @@ public class Product extends BaseEntity {
     private Long productId;
 
     @Column(name = "product_name")
-    private String name;
+    private String productName;
 
     @Column(name = "barcode")
     private String barcode;

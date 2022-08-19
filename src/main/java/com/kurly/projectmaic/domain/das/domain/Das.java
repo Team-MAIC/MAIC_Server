@@ -30,6 +30,7 @@ public class Das extends BaseEntity {
     private Integer passage;
 
     @Column(name = "status")
+    @Enumerated(value = EnumType.STRING)
     private StatusType status;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "das")

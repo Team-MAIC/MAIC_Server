@@ -21,8 +21,8 @@ public class Center extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long centerId;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "center_name")
+    private String centerName;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "center")
     private List<Worker> workers = new ArrayList<>();

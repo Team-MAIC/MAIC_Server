@@ -28,7 +28,7 @@ public class OrderInfo extends BaseEntity {
     @Column(name = "consumer_id")
     private Long consumerId;
 
-    @Column(name = "totlaPrice")
+    @Column(name = "totla_price")
     private Long totalPrice;
 
     @Column(name = "status")

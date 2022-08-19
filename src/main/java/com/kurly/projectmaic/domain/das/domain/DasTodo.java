@@ -24,9 +24,6 @@ public class DasTodo extends BaseEntity {
     @JoinColumn(name = "das_basket_color_id")
     private DasBasketColor dasBasketColor;
 
-//    @Column(name = "das_basket_color_id")
-//    private Long dasBasketColorId;
-
     @Column(name = "order_info_id")
     private Long orderInfoId;
 
