@@ -29,7 +29,4 @@ public class Center extends BaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "center")
     private List<CenterProduct> products = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "center")
-    private List<Round> rounds = new ArrayList<>();
 }

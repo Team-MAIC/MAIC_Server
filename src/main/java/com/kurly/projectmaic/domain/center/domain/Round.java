@@ -20,9 +20,8 @@ public class Round extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roundId;
 
-    @ManyToOne
-    @JoinColumn(name = "center_id")
-    private Center center;
+    @Column(name = "center_id")
+	private Long centerId;
 
     @Column(name = "center_round_number")
     private Integer centerRoundNumber;
