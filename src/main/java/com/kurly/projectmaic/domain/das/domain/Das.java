@@ -33,9 +33,7 @@ public class Das extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private StatusType status;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "das")
-    private List<DasBasketColor> colors = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "das")
-    private List<DasTodo> todos = new ArrayList<>();
+	public void register(final int passage) {
+		this.passage = passage;
+	}
 }

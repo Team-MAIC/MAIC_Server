@@ -24,9 +24,8 @@ public class DasBasketColor extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dasBasketColorId;
 
-    @ManyToOne
-    @JoinColumn(name = "das_id")
-    private Das das;
+	@Column(name = "das_id")
+	private Long dasId;
 
     @Column(name = "product_id")
     private Long productId;
@@ -38,7 +37,4 @@ public class DasBasketColor extends BaseEntity {
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private StatusType status;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "dasBasketColor")
-    private List<DasTodo> todos = new ArrayList<>();
 }

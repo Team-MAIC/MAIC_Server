@@ -30,9 +30,8 @@ public class DasTodo extends BaseEntity {
     @Column(name = "product_id")
     private Long productId;
 
-    @ManyToOne
-    @JoinColumn(name = "das_id")
-    private Das das;
+	@Column(name = "das_id")
+	private Long dasId;
 
     @Column(name = "product_name")
     private String productName;

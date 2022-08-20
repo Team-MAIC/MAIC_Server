@@ -13,7 +13,8 @@ public enum ResponseCode implements EnumType {
 
 	// pick response code
 	NOT_FOUND_PICK_TODO(2001, "항목을 조회하지 못했습니다."),
-	ALREADY_PICK_TODO(2002, "이미 완료 된 항목입니다.");
+	ALREADY_PICK_TODO(2002, "이미 완료 된 항목입니다."),
+	NOT_FOUND_DAS(4001, "DAS 항목을 조회하지 못했습니다.");
 
     private Integer code;
     private String message;
