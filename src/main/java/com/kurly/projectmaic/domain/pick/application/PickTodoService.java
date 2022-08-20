@@ -1,19 +1,13 @@
 package com.kurly.projectmaic.domain.pick.application;
 
-import static com.kurly.projectmaic.global.common.constant.SocketDestination.*;
-
 import java.util.List;
 
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kurly.projectmaic.domain.center.application.RoundService;
 import com.kurly.projectmaic.domain.center.dao.RoundRepository;
 import com.kurly.projectmaic.domain.center.enumeration.RoundStatus;
-import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
 import com.kurly.projectmaic.domain.model.CenterProductArea;
 import com.kurly.projectmaic.domain.model.StatusType;
 import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
@@ -21,8 +15,6 @@ import com.kurly.projectmaic.domain.pick.domain.PickTodo;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoCountDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoDto;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodoCompleteResponse;
-import com.kurly.projectmaic.domain.pick.dto.response.PickTodoCountByRoundResponse;
-import com.kurly.projectmaic.domain.pick.dto.response.PickTodoCountResponse;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodoResponse;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodosResponse;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoCompleteAlreadyException;
@@ -88,7 +80,7 @@ public class PickTodoService {
 			CustomResponseEntity.success(response)
 		);
 
-		// checkCompleted(pickTodo);
+		checkCompleted(pickTodo);
 	}
 
 	private void checkCompleted(PickTodo pickTodo) {
