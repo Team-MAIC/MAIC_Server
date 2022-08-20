@@ -62,6 +62,10 @@ public class CommonDocControllerTest extends ControllerTest {
 				customResponseFields("custom-response", beneathPath("data.responseCode").withSubsectionId("responseCode"),
 					attributes(key("title").value("responseCode")),
 					enumConvertFieldDescriptor(enumDocs.getResponseCode())
+				),
+				customResponseFields("custom-response", beneathPath("data.socketResponseType").withSubsectionId("socketResponseType"),
+					attributes(key("title").value("socketResponseType")),
+					enumConvertFieldDescriptor(enumDocs.getSocketResponseType())
 				)
 			));
 	}

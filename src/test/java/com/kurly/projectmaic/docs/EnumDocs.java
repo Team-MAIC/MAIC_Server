@@ -10,5 +10,6 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EnumDocs {
-	Map<String, String> ResponseCode;
+	Map<String, String> responseCode;
+	Map<String, String> socketResponseType;
 }
