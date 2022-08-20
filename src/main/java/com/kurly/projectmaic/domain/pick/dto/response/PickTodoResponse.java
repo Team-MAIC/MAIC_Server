@@ -6,6 +6,7 @@ public record PickTodoResponse(
 	long pickTodoId,
 	long productId,
 	String productName,
+	String productThumbnail,
 	CenterProductArea area,
 	int line,
 	int location,

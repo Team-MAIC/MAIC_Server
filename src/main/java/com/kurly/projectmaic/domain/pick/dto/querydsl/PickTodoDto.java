@@ -7,6 +7,7 @@ public record PickTodoDto(
 	long pickTodoId,
 	long productId,
 	String productName,
+	String productThumbnail,
 	CenterProductArea area,
 	int line,
 	int location,

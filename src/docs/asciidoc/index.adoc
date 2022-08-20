@@ -32,3 +32,18 @@ include::{snippets}/worker-controller-test/test-get-worker-info/http-response.ad
 
 === response-fields
 include::{snippets}/worker-controller-test/test-get-worker-info/response-fields.adoc[]
+
+[[상품-바코드-조회]]
+== 상품 바코드 조회
+
+=== http-request
+include::{snippets}/product-controller-test/test-get-product-info/http-request.adoc[]
+
+=== path-parameters
+include::{snippets}/product-controller-test/test-get-product-info/path-parameters.adoc[]
+
+=== http-response
+include::{snippets}/product-controller-test/test-get-product-info/http-response.adoc[]
+
+=== response-fields
+include::{snippets}/product-controller-test/test-get-product-info/response-fields.adoc[]

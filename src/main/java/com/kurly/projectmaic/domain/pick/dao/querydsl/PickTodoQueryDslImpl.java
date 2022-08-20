@@ -4,6 +4,7 @@ import static com.kurly.projectmaic.domain.pick.domain.QPickTodo.*;
 
 import java.util.List;
 
+import com.kurly.projectmaic.global.common.expression.OrderByNull;
 import org.springframework.stereotype.Repository;
 
 import com.kurly.projectmaic.domain.model.CenterProductArea;
@@ -12,7 +13,6 @@ import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoCountDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.QPickTodoCountDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.QPickTodoDto;
-import com.kurly.projectmaic.global.common.expression.OrderByNull;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -70,6 +70,7 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
 					pickTodo.pickTodoId,
 					pickTodo.productId,
 					pickTodo.productName,
+					pickTodo.productThumbnail,
 					pickTodo.area,
 					pickTodo.line,
 					pickTodo.location,
