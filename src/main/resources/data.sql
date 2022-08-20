@@ -184,3 +184,11 @@ VALUES (1, 13, 'WAIT');
 --     area VARCHAR(2),
 --     UNIQUE KEY uk (round_id, product_id, area)
 -- )
+
+DROP TABLE IF EXISTS pick_todo_uk;
+CREATE TABLE pick_todo_uk (
+    round_id INT,
+    product_id INT,
+    area VARCHAR(2),
+    UNIQUE KEY uk (round_id, product_id, area)
+)

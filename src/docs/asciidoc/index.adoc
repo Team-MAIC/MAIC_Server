@@ -1,0 +1,30 @@
+ifndef::snippets[]
+:snippets: {basedir}/generated-snippets
+endif::[]
+
+= projectMAIC 백오피스 API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs // 문서에 표기되는 코드들의 하이라이팅을 highlightjs를 사용
+:toc: left // toc (Table Of Contents)를 문서의 좌측에 두기
+:toclevels: 2
+:sectlinks:
+
+[[공통-응답-코드]]
+== 공통 응답 코드
+include::{snippets}/common-doc-controller-test/enums/custom-response-fields-responseCode.adoc[]
+
+[[로그인]]
+== 로그인
+
+=== http-request
+include::{snippets}/worker-controller-test/test-get-worker-info/http-request.adoc[]
+
+=== request-headers
+include::{snippets}/worker-controller-test/test-get-worker-info/request-headers.adoc[]
+
+=== http-response
+include::{snippets}/worker-controller-test/test-get-worker-info/http-response.adoc[]
+
+=== response-fields
+include::{snippets}/worker-controller-test/test-get-worker-info/response-fields.adoc[]
