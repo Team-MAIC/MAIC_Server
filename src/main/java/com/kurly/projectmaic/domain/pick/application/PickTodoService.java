@@ -47,6 +47,7 @@ public class PickTodoService {
 				dto.pickTodoId(),
 				dto.productId(),
 				dto.productName(),
+				dto.productThumbnail(),
 				dto.area(),
 				dto.line(),
 				dto.location(),
