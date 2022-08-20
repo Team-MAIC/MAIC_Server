@@ -29,4 +29,10 @@ public class Round extends BaseEntity {
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private RoundStatus status;
+
+	public void completePickRound() {
+		if (this.status == RoundStatus.PICK) {
+			this.status = RoundStatus.DAS;
+		}
+	}
 }

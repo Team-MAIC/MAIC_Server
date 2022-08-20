@@ -37,4 +37,12 @@ public class RoundQueryDslImpl implements RoundQueryDsl {
 			)
 			.fetch();
 	}
+
+	@Override
+	public void updateRoundStatus(final long roundId, final RoundStatus status) {
+		queryFactory.update(round)
+			.set(round.status, status)
+			.where(round.roundId.eq(roundId))
+			.execute();
+	}
 }

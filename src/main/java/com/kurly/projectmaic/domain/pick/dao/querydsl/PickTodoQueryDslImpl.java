@@ -12,6 +12,7 @@ import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoCountDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.QPickTodoCountDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.QPickTodoDto;
+import com.kurly.projectmaic.global.common.expression.OrderByNull;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,28 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
     private final JPAQueryFactory queryFactory;
 
 	@Override
-    public List<PickTodoCountDto> getTodoCountByCurrentRound(final List<Long> roundIds, final CenterProductArea area) {
+	public PickTodoCountDto getTodoCountByCurrentRound(final long roundId) {
+		var pickTodoCountDto = queryFactory.select(
+				new QPickTodoCountDto(
+					pickTodo.roundId,
+					pickTodo.count()
+				)
+			)
+			.from(pickTodo)
+			.where(
+				pickTodo.status.eq(StatusType.READY),
+				pickTodo.roundId.eq(roundId)
+			)
+			.groupBy(pickTodo.roundId, pickTodo.area)
+			.orderBy(OrderByNull.DEFAULT)
+			.fetchFirst();
+
+		return (pickTodoCountDto == null) ?
+			new PickTodoCountDto(roundId, 0L) : pickTodoCountDto;
+	}
+
+	@Override
+    public List<PickTodoCountDto> getTodoCountByRounds(final List<Long> roundIds, final CenterProductArea area) {
 		return queryFactory.select(
 				new QPickTodoCountDto(
 					pickTodo.roundId,
@@ -61,6 +83,5 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
 			)
 			.orderBy(pickTodo.line.asc(), pickTodo.location.asc())
 			.fetch();
-
 	}
 }

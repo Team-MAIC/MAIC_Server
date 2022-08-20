@@ -1,23 +1,24 @@
 package com.kurly.projectmaic.domain.center.application;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.kurly.projectmaic.domain.center.dao.RoundRepository;
 import com.kurly.projectmaic.domain.center.dao.WorkerRepository;
+import com.kurly.projectmaic.domain.center.domain.Round;
 import com.kurly.projectmaic.domain.center.domain.Worker;
 import com.kurly.projectmaic.domain.center.dto.querydsl.RoundDto;
 import com.kurly.projectmaic.domain.center.dto.response.RoundResponse;
 import com.kurly.projectmaic.domain.center.dto.response.RoundsResponse;
+import com.kurly.projectmaic.domain.center.exception.RoundNotFoundException;
 import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
-import com.kurly.projectmaic.domain.pick.application.PickTodoService;
+import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoCountDto;
-import com.kurly.projectmaic.domain.pick.dto.response.PickTodoCountByRoundResponse;
-import com.kurly.projectmaic.domain.pick.dto.response.PickTodoCountResponse;
 import com.kurly.projectmaic.global.common.response.ResponseCode;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class RoundService {
 
     private final RoundRepository roundRepository;
 	private final WorkerRepository workerRepository;
-	private final PickTodoService pickTodoService;
+	private final PickTodoRepository pickTodoRepository;
 
 	@Transactional(readOnly = true)
     public RoundsResponse getRounds(final long workerId) {
@@ -40,16 +41,16 @@ public class RoundService {
 			.map(RoundDto::roundId)
 			.toList();
 
-		PickTodoCountByRoundResponse response = pickTodoService.getTodoCountByCurrentRound(roundIds, worker.getArea());
+		List<PickTodoCountDto> dtos = pickTodoRepository.getTodoCountByRounds(roundIds, worker.getArea());
 
-		List<RoundResponse> rounds = response.todos().stream()
+		List<RoundResponse> rounds = dtos.stream()
 			.map(todo -> getRoundResponse(roundDtos, todo))
 			.toList();
 
         return new RoundsResponse(rounds);
     }
 
-	private RoundResponse getRoundResponse(List<RoundDto> roundDtos, PickTodoCountResponse todo) {
+	private RoundResponse getRoundResponse(List<RoundDto> roundDtos, PickTodoCountDto todo) {
 		RoundDto roundDto = roundDtos.stream()
 			.filter(dto -> dto.roundId() == todo.roundId())
 			.findFirst()

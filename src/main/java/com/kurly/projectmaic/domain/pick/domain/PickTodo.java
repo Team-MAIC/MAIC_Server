@@ -49,4 +49,9 @@ public class PickTodo extends BaseEntity {
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private StatusType status;
+
+	public void complete(long workerId) {
+		this.workerId = workerId;
+		this.status = StatusType.FINISH;
+	}
 }

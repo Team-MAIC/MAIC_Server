@@ -36,4 +36,9 @@ public class CustomResponseEntity<T> {
         return new CustomResponseEntity<>(
                 responseCode.getCode(),responseCode.getMessage(), null);
     }
+
+	public static <Void> CustomResponseEntity<Void> disconnect() {
+		return new CustomResponseEntity<>(
+			ResponseCode.DISCONNECT.getCode(), null, null);
+	}
 }

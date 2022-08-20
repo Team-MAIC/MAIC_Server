@@ -8,6 +8,7 @@ import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoDto;
 
 public interface PickTodoQueryDsl {
 
-	List<PickTodoCountDto> getTodoCountByCurrentRound(final List<Long> centerIds, final CenterProductArea area);
+	PickTodoCountDto getTodoCountByCurrentRound(final long roundId);
+	List<PickTodoCountDto> getTodoCountByRounds(final List<Long> centerIds, final CenterProductArea area);
 	List<PickTodoDto> getPickTodos(final long roundId, final CenterProductArea area);
 }

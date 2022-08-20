@@ -6,9 +6,14 @@ import lombok.Getter;
 public enum ResponseCode {
     OK(1, "성공"),
     FAIL(-1, "실패"),
+	DISCONNECT(-2, "해제"),
 
     // center response code
-    NOT_FOUND_WORKER(1001, "작업자 정보를 조회하지 못했습니다.");
+    NOT_FOUND_WORKER(1001, "작업자 정보를 조회하지 못했습니다."),
+
+	// pick response code
+	NOT_FOUND_PICK_TODO(2001, "항목을 조회하지 못했습니다."),
+	ALREADY_PICK_TODO(2002, "이미 완료 된 항목입니다.");
 
     private Integer code;
     private String message;

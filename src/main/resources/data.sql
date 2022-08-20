@@ -145,7 +145,7 @@ INSERT INTO order_product (order_info_id, product_id, amount)
 VALUES (7, 5, 1);
 
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, line, location, amount, status)
-VALUES (1, 1, 1, 'A', 1, '11', 5, 'FINISH');
+VALUES (1, 1, 1, 'A', 1, '11', 5, 'READY');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, line, location, amount, status)
 VALUES (1, 2, 2, 'A', 2, '12', 3, 'FINISH');
 INSERT INTO pick_todo (round_id, product_id, worker_id, area, line, location, amount, status)
@@ -177,10 +177,10 @@ INSERT INTO round (center_id, center_round_number, status)
 VALUES (1, 12, 'READY');
 INSERT INTO round (center_id, center_round_number, status)
 VALUES (1, 13, 'WAIT');
-
-CREATE TABLE pick_todo_uk (
-    round_id INT,
-    product_id INT,
-    area VARCHAR(2),
-    UNIQUE KEY uk (round_id, product_id, area)
-)
+--
+-- CREATE TABLE pick_todo_uk (
+--     round_id INT,
+--     product_id INT,
+--     area VARCHAR(2),
+--     UNIQUE KEY uk (round_id, product_id, area)
+-- )
