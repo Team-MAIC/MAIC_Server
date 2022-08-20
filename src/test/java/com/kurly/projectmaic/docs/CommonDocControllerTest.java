@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.snippet.Attributes.attributes;
@@ -59,6 +61,8 @@ public class CommonDocControllerTest extends ControllerTest {
 		// then
 		result.andExpect(status().isOk())
 			.andDo(document("common-doc-controller-test/enums",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
 				customResponseFields("custom-response", beneathPath("data.responseCode").withSubsectionId("responseCode"),
 					attributes(key("title").value("responseCode")),
 					enumConvertFieldDescriptor(enumDocs.getResponseCode())

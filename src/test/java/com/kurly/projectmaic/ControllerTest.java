@@ -6,6 +6,8 @@ import com.kurly.projectmaic.config.RestDocsConfiguration;
 import com.kurly.projectmaic.docs.CommonDocController;
 import com.kurly.projectmaic.domain.center.api.WorkerController;
 import com.kurly.projectmaic.domain.center.application.WorkerService;
+import com.kurly.projectmaic.domain.product.api.ProductController;
+import com.kurly.projectmaic.domain.product.application.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +26,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @Import(RestDocsConfiguration.class)
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(value = {
-	WorkerController.class,
-	CommonDocController.class
-})
+@WebMvcTest(CommonDocController.class)
 public class ControllerTest {
 
 	protected MockMvc mockMvc;
