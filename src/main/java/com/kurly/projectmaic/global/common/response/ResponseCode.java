@@ -3,7 +3,7 @@ package com.kurly.projectmaic.global.common.response;
 import lombok.Getter;
 
 @Getter
-public enum ResponseCode {
+public enum ResponseCode implements EnumType {
     OK(1, "성공"),
     FAIL(-1, "실패"),
 
@@ -17,4 +17,14 @@ public enum ResponseCode {
         this.code = code;
         this.message = message;
     }
+
+	@Override
+	public String getCodeToString() {
+		return this.code.toString();
+	}
+
+	@Override
+	public String getMessage() {
+		return this.message;
+	}
 }
