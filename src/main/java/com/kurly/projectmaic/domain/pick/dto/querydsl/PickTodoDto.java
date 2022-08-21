@@ -1,6 +1,7 @@
 package com.kurly.projectmaic.domain.pick.dto.querydsl;
 
 import com.kurly.projectmaic.domain.model.CenterProductArea;
+import com.kurly.projectmaic.domain.model.StatusType;
 import com.querydsl.core.annotations.QueryProjection;
 
 public record PickTodoDto(
@@ -11,7 +12,8 @@ public record PickTodoDto(
 	CenterProductArea area,
 	int line,
 	int location,
-	long amount
+	long amount,
+	StatusType status
 ) {
 
 	@QueryProjection

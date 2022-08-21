@@ -20,6 +20,7 @@ import com.kurly.projectmaic.domain.pick.dto.response.PickTodoCompleteResponse;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodoResponse;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodosResponse;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoCompleteAlreadyException;
+import com.kurly.projectmaic.domain.pick.exception.PickTodoFilterType;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoNotFoundException;
 import com.kurly.projectmaic.global.common.constant.RedisTopic;
 import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
@@ -39,8 +40,9 @@ public class PickTodoService {
 	private final RedisPublisher publisher;
 
 	@Transactional
-	public PickTodosResponse getPickTodos(final long roundId, final CenterProductArea area) {
-		List<PickTodoDto> dtos = pickTodoRepository.getPickTodos(roundId, area);
+	public PickTodosResponse getPickTodos(final long roundId, final CenterProductArea area, final long workerId,
+		final PickTodoFilterType filterType) {
+		List<PickTodoDto> dtos = pickTodoRepository.getPickTodos(roundId, area, workerId, filterType);
 
 		List<PickTodoResponse> todos = dtos.stream()
 			.map(dto -> new PickTodoResponse(
@@ -51,7 +53,8 @@ public class PickTodoService {
 				dto.area(),
 				dto.line(),
 				dto.location(),
-				dto.amount()
+				dto.amount(),
+				dto.status()
 			))
 			.toList();
 
@@ -75,6 +78,7 @@ public class PickTodoService {
 	}
 
 	public void subscribePickChannel(final long roundId, final CenterProductArea area) {
+
 		publisher.publish(
 			new ChannelTopic(RedisTopic.SUB),
 			CustomResponseEntity.connect(

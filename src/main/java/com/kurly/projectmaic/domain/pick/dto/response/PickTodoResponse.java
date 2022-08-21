@@ -1,6 +1,7 @@
 package com.kurly.projectmaic.domain.pick.dto.response;
 
 import com.kurly.projectmaic.domain.model.CenterProductArea;
+import com.kurly.projectmaic.domain.model.StatusType;
 
 public record PickTodoResponse(
 	long pickTodoId,
@@ -10,6 +11,7 @@ public record PickTodoResponse(
 	CenterProductArea area,
 	int line,
 	int location,
-	long amount
+	long amount,
+	StatusType status
 ) {
 }

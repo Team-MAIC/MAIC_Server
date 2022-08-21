@@ -6,12 +6,10 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
 import com.kurly.projectmaic.domain.model.CenterProductArea;
 import com.kurly.projectmaic.domain.pick.application.PickTodoService;
-import com.kurly.projectmaic.domain.pick.dto.request.PickTodosRequest;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodosResponse;
 import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
 
@@ -29,12 +27,12 @@ public class SocketPickTodoController {
 		@DestinationVariable final long roundId,
 		@DestinationVariable final CenterProductArea area) {
 
-		PickTodosResponse response = pickTodoService.getPickTodos(roundId, area);
-		pickTodoService.subscribePickChannel(roundId, area);
+		// PickTodosResponse response = pickTodoService.getPickTodos(roundId, area, workerId, filterType);
+		// pickTodoService.subscribePickChannel(roundId, area);
 
-		template.convertAndSendToUser(String.valueOf(workerId),
-			String.format(PICK_WORKER_DESTINATION_FORMAT, roundId, area),
-			CustomResponseEntity.success(response)
-		);
+		// template.convertAndSendToUser(String.valueOf(workerId),
+		// 	String.format(PICK_WORKER_DESTINATION_FORMAT, roundId, area),
+		// 	CustomResponseEntity.success(response)
+		// );
 	}
 }
