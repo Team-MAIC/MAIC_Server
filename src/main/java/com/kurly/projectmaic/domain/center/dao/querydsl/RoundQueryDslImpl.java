@@ -60,6 +60,7 @@ public class RoundQueryDslImpl implements RoundQueryDsl {
 			)
 			.from(round)
 			.where(
+				round.centerId.eq(centerId),
 				round.status.in(List.of(RoundStatus.READY, RoundStatus.PICK))
 			)
 			.fetch();

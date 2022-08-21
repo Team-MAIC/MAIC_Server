@@ -3,11 +3,9 @@ package com.kurly.projectmaic.domain.center.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.kurly.projectmaic.domain.center.dao.RedisWorkerRepository;
 import com.kurly.projectmaic.domain.center.dao.WorkerRepository;
 import com.kurly.projectmaic.domain.center.domain.Center;
 import com.kurly.projectmaic.domain.center.domain.Worker;
-import com.kurly.projectmaic.domain.center.dto.WorkerInfoDto;
 import com.kurly.projectmaic.domain.center.dto.response.WorkerInfoResponse;
 import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
 import com.kurly.projectmaic.global.common.response.ResponseCode;
@@ -19,44 +17,27 @@ import lombok.RequiredArgsConstructor;
 public class WorkerService {
 
     private final WorkerRepository workerRepository;
-	private final RedisWorkerRepository redisWorkerRepository;
 
     @Transactional()
     public WorkerInfoResponse getWorkerInfo(final long workerId) {
+		Worker worker = workerRepository.findById(workerId)
+			.orElseThrow(() ->
+				new WorkerNotFoundException(ResponseCode.NOT_FOUND_WORKER,
+					String.format("workerId : %s", workerId)));
 
-		WorkerInfoDto workerInfoDto = redisWorkerRepository.getWorkerInfo(workerId);
+		Center center = null;
 
-		if (workerInfoDto == null) {
-			Worker worker = workerRepository.findById(workerId)
-				.orElseThrow(() ->
-					new WorkerNotFoundException(ResponseCode.NOT_FOUND_WORKER,
-						String.format("workerId : %s", workerId)));
-
-			Center center = null;
-
-			if (worker.getCenter() != null) {
-				center = worker.getCenter();
-			}
-
-			workerInfoDto = new WorkerInfoDto(
-				worker.getWorkerId(),
-				(center != null) ? center.getCenterId() : null,
-				(center != null) ? center.getCenterName() : null,
-				worker.getRole(),
-				worker.getPassage(),
-				worker.getArea()
-			);
-
-			redisWorkerRepository.putWorkerInfo(workerInfoDto);
+		if (worker.getCenter() != null) {
+			center = worker.getCenter();
 		}
 
 		return new WorkerInfoResponse(
-			workerInfoDto.getWorkerId(),
-			workerInfoDto.getCenterId(),
-			workerInfoDto.getCenterName(),
-			workerInfoDto.getRole(),
-			workerInfoDto.getPassage(),
-			workerInfoDto.getArea()
+			worker.getWorkerId(),
+			(center != null) ? center.getCenterId() : null,
+			(center != null) ? center.getCenterName() : null,
+			worker.getRole(),
+			worker.getPassage(),
+			worker.getArea()
 		);
     }
 
