@@ -7,7 +7,7 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_DATABASE=projectmaic
+      - MYSQL_DATABASE=maic_db
       - MYSQL_ROOT_PASSWORD=local_db_pw
     command:
       - --character-set-server=utf8mb4
