@@ -498,6 +498,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">해제</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4001</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DAS 항목을 조회하지 못했습니다.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>1001</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작업자 정보를 조회하지 못했습니다.</p></td>
 </tr>
@@ -559,7 +563,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 210
+Content-Length: 199
 
 {
   "code" : 1,
@@ -652,10 +656,26 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_request_headers_2"><a class="link" href="#_request_headers_2">request-headers</a></h3>
-<div class="paragraph">
-<p>Unresolved directive in index.adoc - include::F:\ho-di\kurly2\build\generated-snippets/product-controller-test/test-get-product-info/request-headers.adoc[]</p>
-</div>
+<h3 id="_path_parameters"><a class="link" href="#_path_parameters">path-parameters</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /products/{barcode}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>barcode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">바코드 번호</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_http_response_2"><a class="link" href="#_http_response_2">http-response</a></h3>
@@ -663,7 +683,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 141
+Content-Length: 134
 
 {
   "code" : 1,
@@ -721,7 +741,7 @@ Content-Length: 141
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2022-08-20 22:27:47 +0900
+Last updated 2022-08-21 02:01:16 +0900
 </div>
 </div>
 </body>

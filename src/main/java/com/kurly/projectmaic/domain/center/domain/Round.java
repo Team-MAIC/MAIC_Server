@@ -24,7 +24,7 @@ public class Round extends BaseEntity {
 	private Long centerId;
 
     @Column(name = "center_round_number")
-    private Integer centerRoundNumber;
+    private Long centerRoundNumber;
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)

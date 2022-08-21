@@ -6,7 +6,7 @@ import com.querydsl.core.annotations.QueryProjection;
 public record RoundDto(
 	long roundId,
 	long centerId,
-	int centerRoundNumber,
+	long centerRoundNumber,
 	RoundStatus status
 ) {
 

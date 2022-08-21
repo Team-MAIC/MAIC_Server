@@ -23,6 +23,8 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
 
     private final JPAQueryFactory queryFactory;
 
+	// public void bulkSave()
+
 	@Override
 	public PickTodoCountDto getTodoCountByCurrentRound(final long roundId) {
 		var pickTodoCountDto = queryFactory.select(

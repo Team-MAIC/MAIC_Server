@@ -3,6 +3,9 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/projectmaic?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
     username: root
     password: local_db_pw
+    hikari:
+      data-source-properties:
+        rewriteBatchedStatements: true
   sql:
     init:
       mode: always
@@ -12,6 +15,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        order_inserts: true
+        order_updates: true
+        generate_statistics: true
+        jdbc:
+          batch_size: 20000
       logging.level:
         org.hibernate.SQL: debug
     show-sql: true

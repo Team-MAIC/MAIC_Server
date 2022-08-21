@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.kurly.projectmaic.domain.center.domain.QRound;
 import com.kurly.projectmaic.domain.center.domain.Round;
+import com.kurly.projectmaic.domain.center.dto.querydsl.CurrentRoundDto;
+import com.kurly.projectmaic.domain.center.dto.querydsl.QCurrentRoundDto;
 import com.kurly.projectmaic.domain.center.dto.querydsl.QRoundDto;
 import com.kurly.projectmaic.domain.center.dto.querydsl.RoundDto;
 import com.kurly.projectmaic.domain.center.enumeration.RoundStatus;
@@ -20,6 +22,31 @@ import lombok.RequiredArgsConstructor;
 public class RoundQueryDslImpl implements RoundQueryDsl {
 
 	private final JPAQueryFactory queryFactory;
+
+	@Override
+	public CurrentRoundDto getCurrentRoundId(long centerId) {
+		return queryFactory.select(
+				new QCurrentRoundDto(
+					round.roundId,
+					round.centerRoundNumber
+				)
+			)
+			.from(round)
+			.where(
+				round.centerId.eq(centerId)
+			)
+			.orderBy(round.roundId.desc())
+			.limit(1)
+			.fetchFirst();
+	}
+
+	@Override
+	public Long createNewRound(long centerId, long centerRoundNumber) {
+		return queryFactory.insert(round)
+			.columns(round.centerId, round.centerRoundNumber, round.status)
+			.values(centerId, centerRoundNumber, RoundStatus.WAIT)
+			.execute();
+	}
 
 	@Override
 	public List<RoundDto> findToDoRoundsByCenterId(long centerId) {
