@@ -1,5 +1,10 @@
 package com.kurly.projectmaic.domain.das.application;
 
+import static com.kurly.projectmaic.global.common.response.ResponseCode.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -13,8 +18,15 @@ import com.kurly.projectmaic.domain.center.enumeration.RoundStatus;
 import com.kurly.projectmaic.domain.das.dao.DasBasketReopository;
 import com.kurly.projectmaic.domain.das.dao.DasTodoRepository;
 import com.kurly.projectmaic.domain.das.domain.DasBasket;
+import com.kurly.projectmaic.domain.das.domain.DasTodo;
 import com.kurly.projectmaic.domain.das.dto.response.BasketResponse;
+import com.kurly.projectmaic.domain.das.dto.response.BasketsInfoResponse;
 import com.kurly.projectmaic.domain.das.dto.response.DasTodoResponse;
+import com.kurly.projectmaic.domain.das.dto.response.DasTodoSummaryResponse;
+import com.kurly.projectmaic.domain.das.dto.response.BasketInfoResponse;
+import com.kurly.projectmaic.domain.das.enumeration.BasketColor;
+import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
+import com.kurly.projectmaic.domain.das.exception.EveryBasketColorsUsedException;
 import com.kurly.projectmaic.domain.order.dao.OrderInfoRepository;
 import com.kurly.projectmaic.domain.order.dao.OrderProductRepository;
 import com.kurly.projectmaic.domain.order.dto.querydsl.OrderInfoIdByRoundDto;
@@ -38,7 +50,7 @@ public class DasTodoService {
 	private final ProductRepository productRepository;
 
 	@Transactional
-	public DasTodoResponse getDasRounds(final long workerId, final long centerID) {
+	public DasTodoSummaryResponse getDasRounds(final long workerId, final long centerID) {
 		Round round = getRound(workerId, centerID);
 
 		List<Long> orderIds = getOrderIds(round.getRoundId());
@@ -68,7 +80,7 @@ public class DasTodoService {
 			)
 			.toList();
 
-		return new DasTodoResponse(round.getRoundId(), basketResponses);
+		return new DasTodoSummaryResponse(round.getRoundId(), basketResponses);
 	}
 
 	private Round getRound(final long workerId, final long centerId) {
@@ -98,5 +110,65 @@ public class DasTodoService {
 		return orderInfoIdByRoundDtos.stream()
 			.map(OrderInfoIdByRoundDto::orderId)
 			.toList();
+	}
+
+	@Transactional
+	public BasketsInfoResponse getDasTodos(final long roundId,
+		final BasketStatus status,
+		final BasketColor color) {
+		var todos = dasTodoRepository.getDasTodos(roundId, status, color);
+
+		Map<Integer, DasTodo> map = new HashMap<>();
+
+		todos.forEach(t -> {
+			if (!map.containsKey(t.getBasketNum())) {
+				map.put(t.getBasketNum(), t);
+			}
+		});
+
+		List<BasketInfoResponse> basketInfoResponses = new ArrayList<>(todos.size());
+
+		for (int i = 0; i < 5; i++) {
+			DasTodo todo = map.get(i);
+			DasTodoResponse dasTodoResponse = null;
+
+			if (todo != null) {
+				dasTodoResponse = new DasTodoResponse(
+					roundId,
+					todo.getProductId(),
+					todo.getProductName(),
+					todo.getProductAmount(),
+					todo.getBasketColor()
+				);
+			}
+
+			basketInfoResponses.add(
+				new BasketInfoResponse(
+					i,
+					dasTodoResponse
+				)
+			);
+		}
+
+
+		return new BasketsInfoResponse(basketInfoResponses);
+	}
+
+	@Transactional
+	public void updateColor(long roundId, long productId) {
+		List<BasketColor> colors = dasTodoRepository.getUsedColor(roundId);
+
+		if (colors.size() == 4) {
+			throw new EveryBasketColorsUsedException(USED_EVERY_COLORS, "");
+		}
+
+		BasketColor color = Arrays.stream(BasketColor.values())
+			.filter(c -> !colors.contains(c))
+			.filter(c -> c != BasketColor.ALL &&
+				c != BasketColor.BLACK)
+			.findFirst()
+			.orElseThrow(() -> new EveryBasketColorsUsedException(USED_EVERY_COLORS, ""));
+
+		dasTodoRepository.updateColor(roundId, productId, color);
 	}
 }

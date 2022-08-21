@@ -1,3 +1,5 @@
+SET SESSION sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES';
+
 INSERT INTO center (center_name) VALUES ('김포물류센터');
 INSERT INTO center (center_name) VALUES ('송파물류센터');
 INSERT INTO center (center_name) VALUES ('고촌물류센터');

@@ -3,7 +3,6 @@ package com.kurly.projectmaic.domain.pick.application;
 import java.util.List;
 
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +10,6 @@ import com.kurly.projectmaic.domain.center.dao.RoundRepository;
 import com.kurly.projectmaic.domain.center.domain.Round;
 import com.kurly.projectmaic.domain.center.enumeration.RoundStatus;
 import com.kurly.projectmaic.domain.center.exception.RoundNotFoundException;
-import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
 import com.kurly.projectmaic.domain.model.CenterProductArea;
 import com.kurly.projectmaic.domain.model.StatusType;
 import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
@@ -29,7 +27,6 @@ import com.kurly.projectmaic.global.common.response.ResponseCode;
 import com.kurly.projectmaic.global.common.response.SocketResponseType;
 import com.kurly.projectmaic.global.common.utils.RedisChannelUtils;
 import com.kurly.projectmaic.global.queue.RedisPublisher;
-import com.kurly.projectmaic.global.queue.RedisSubscriber;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,8 +36,6 @@ public class PickTodoService {
 
 	private final PickTodoRepository pickTodoRepository;
 	private final RoundRepository roundRepository;
-	private final RedisMessageListenerContainer container;
-	private final RedisSubscriber subscriber;
 	private final RedisPublisher publisher;
 
 	@Transactional

@@ -21,7 +21,7 @@ public class DasBasketQueryDslImpl implements DasBasketQueryDsl {
 	@Override
 	public void bulkSave(List<Long> orderIds) {
 		jdbcTemplate.batchUpdate("INSERT INTO das_basket ("
-				+ "order_id, basket_num"
+				+ "order_info_id, basket_num"
 				+ ") VALUES ("
 				+ "?, ?)",
 			new BatchPreparedStatementSetter() {
