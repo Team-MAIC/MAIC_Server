@@ -1,5 +1,6 @@
 package com.kurly.projectmaic.domain.product.dao.querydsl;
 
+import static com.kurly.projectmaic.domain.order.domain.QOrderProduct.*;
 import static com.kurly.projectmaic.domain.product.domain.QProduct.*;
 
 import java.util.List;
@@ -35,6 +36,7 @@ public class ProductQueryDslImpl implements ProductQueryDsl {
 			.where(
 				product.productId.in(productIds)
 			)
+			.orderBy(product.productId.asc())
 			.fetch();
 
 		long totalPrice = products.stream()

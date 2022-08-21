@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kurly.projectmaic.domain.center.dao.RoundRepository;
+import com.kurly.projectmaic.domain.center.domain.Round;
 import com.kurly.projectmaic.domain.center.enumeration.RoundStatus;
+import com.kurly.projectmaic.domain.center.exception.RoundNotFoundException;
+import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
 import com.kurly.projectmaic.domain.model.CenterProductArea;
 import com.kurly.projectmaic.domain.model.StatusType;
 import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
@@ -38,8 +41,18 @@ public class PickTodoService {
 	private final RedisSubscriber subscriber;
 	private final RedisPublisher publisher;
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public PickTodosResponse getPickTodos(final long roundId, final CenterProductArea area) {
+		Round round = roundRepository.findById(roundId)
+			.orElseThrow(() ->
+				new RoundNotFoundException(ResponseCode.NOT_FOUND_ROUND,
+					String.format("roundId : %s", roundId)));
+
+		if (round.getStatus() == RoundStatus.READY) {
+			round.startWork();
+			roundRepository.save(round);
+		}
+
 		List<PickTodoDto> dtos = pickTodoRepository.getPickTodos(roundId, area);
 
 		List<PickTodoResponse> todos = dtos.stream()

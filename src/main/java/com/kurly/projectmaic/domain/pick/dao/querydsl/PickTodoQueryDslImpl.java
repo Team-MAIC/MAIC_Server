@@ -2,9 +2,18 @@ package com.kurly.projectmaic.domain.pick.dao.querydsl;
 
 import static com.kurly.projectmaic.domain.pick.domain.QPickTodo.*;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.Instant;
 import java.util.List;
 
+import com.kurly.projectmaic.domain.center.dto.querydsl.CenterProductDto;
+import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductByRoundIdDto;
+import com.kurly.projectmaic.domain.product.dto.querydsl.ProductDto;
 import com.kurly.projectmaic.global.common.expression.OrderByNull;
+
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kurly.projectmaic.domain.model.CenterProductArea;
@@ -22,8 +31,43 @@ import lombok.RequiredArgsConstructor;
 public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
 
     private final JPAQueryFactory queryFactory;
+	private final JdbcTemplate jdbcTemplate;
 
-	// public void bulkSave()
+	@Override
+	public void bulkSave(
+		final long roundId,
+		final List<OrderProductByRoundIdDto> orderProducts,
+		final List<ProductDto> productDtos,
+		final List<CenterProductDto> centerProductDtos) {
+
+		long now = Instant.now().toEpochMilli();
+
+		jdbcTemplate.batchUpdate("INSERT INTO pick_todo ("
+				+ "round_id, product_id, product_name, product_thumbnail, amount, area, line, location, status, created_at, modified_at"
+				+ ") values ("
+				+ "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+			new BatchPreparedStatementSetter() {
+				@Override
+				public void setValues(PreparedStatement ps, int i) throws SQLException {
+					ps.setLong(1, roundId);
+					ps.setLong(2, orderProducts.get(i).productId());
+					ps.setString(3, productDtos.get(i).productName());
+					ps.setString(4, productDtos.get(i).productThumbnail());
+					ps.setLong(5, orderProducts.get(i).amount());
+					ps.setString(6, centerProductDtos.get(i).area().name());
+					ps.setInt(7, centerProductDtos.get(i).line());
+					ps.setInt(8, centerProductDtos.get(i).location());
+					ps.setString(9, StatusType.READY.name());
+					ps.setLong(10, now);
+					ps.setLong(11, now);
+				}
+
+				@Override
+				public int getBatchSize() {
+					return orderProducts.size();
+				}
+			});
+	}
 
 	@Override
 	public PickTodoCountDto getTodoCountByCurrentRound(final long roundId) {

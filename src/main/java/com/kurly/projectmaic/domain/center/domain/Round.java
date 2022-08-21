@@ -35,4 +35,10 @@ public class Round extends BaseEntity {
 			this.status = RoundStatus.DAS;
 		}
 	}
+
+	public void startWork() {
+		if (this.status == RoundStatus.READY) {
+			this.status = RoundStatus.PICK;
+		}
+	}
 }
