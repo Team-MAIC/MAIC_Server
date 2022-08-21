@@ -2,6 +2,8 @@ package com.kurly.projectmaic.domain.das.domain;
 
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 import com.kurly.projectmaic.domain.model.BaseEntity;
+import com.kurly.projectmaic.domain.model.StatusType;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,11 +29,11 @@ public class DasTodo extends BaseEntity {
     @Column(name = "order_info_id")
     private Long orderInfoId;
 
+	@Column(name = "roundId")
+	private Long roundId;
+
     @Column(name = "product_id")
     private Long productId;
-
-	@Column(name = "das_id")
-	private Long dasId;
 
     @Column(name = "product_name")
     private String productName;
@@ -42,13 +44,13 @@ public class DasTodo extends BaseEntity {
     @Column(name = "product_weight")
     private Double productWeight;
 
-    @Column(name = "basket_location")
-    private Integer basketLocation;
+    @Column(name = "basket_num")
+    private Integer basketNum;
 
     @Column(name = "basket_weight")
     private Double basketWeight;
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
-    private BasketStatus status;
+    private StatusType status;
 }

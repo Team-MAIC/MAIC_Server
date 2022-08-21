@@ -43,16 +43,6 @@ public class PickTodoService {
 
 	@Transactional
 	public PickTodosResponse getPickTodos(final long roundId, final CenterProductArea area) {
-		Round round = roundRepository.findById(roundId)
-			.orElseThrow(() ->
-				new RoundNotFoundException(ResponseCode.NOT_FOUND_ROUND,
-					String.format("roundId : %s", roundId)));
-
-		if (round.getStatus() == RoundStatus.READY) {
-			round.startWork();
-			roundRepository.save(round);
-		}
-
 		List<PickTodoDto> dtos = pickTodoRepository.getPickTodos(roundId, area);
 
 		List<PickTodoResponse> todos = dtos.stream()
@@ -68,7 +58,23 @@ public class PickTodoService {
 			))
 			.toList();
 
+		if (dtos.size() > 0) {
+			startRound(roundId);
+		}
+
 		return new PickTodosResponse(todos);
+	}
+
+	private void startRound(long roundId) {
+		Round round = roundRepository.findById(roundId)
+			.orElseThrow(() ->
+				new RoundNotFoundException(ResponseCode.NOT_FOUND_ROUND,
+					String.format("roundId : %s", roundId)));
+
+		if (round.getStatus() == RoundStatus.READY) {
+			round.startPick();
+			roundRepository.save(round);
+		}
 	}
 
 	public void subscribePickChannel(final long roundId, final CenterProductArea area) {

@@ -24,8 +24,8 @@ public class DasBasketColor extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dasBasketColorId;
 
-	@Column(name = "das_id")
-	private Long dasId;
+	@Column(name = "worker_id")
+	private Long workerId;
 
     @Column(name = "product_id")
     private Long productId;

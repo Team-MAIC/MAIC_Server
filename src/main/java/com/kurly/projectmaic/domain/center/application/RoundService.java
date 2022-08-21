@@ -7,12 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.kurly.projectmaic.domain.center.dao.RoundRepository;
 import com.kurly.projectmaic.domain.center.dao.WorkerRepository;
-import com.kurly.projectmaic.domain.center.domain.Round;
 import com.kurly.projectmaic.domain.center.domain.Worker;
 import com.kurly.projectmaic.domain.center.dto.querydsl.RoundDto;
 import com.kurly.projectmaic.domain.center.dto.response.RoundResponse;
 import com.kurly.projectmaic.domain.center.dto.response.RoundsResponse;
-import com.kurly.projectmaic.domain.center.exception.RoundNotFoundException;
 import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
 import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoCountDto;

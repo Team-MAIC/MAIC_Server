@@ -26,19 +26,32 @@ public class Round extends BaseEntity {
     @Column(name = "center_round_number")
     private Long centerRoundNumber;
 
+	@Column(name = "worker_id")
+	private Long workerId;
+
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private RoundStatus status;
 
-	public void completePickRound() {
-		if (this.status == RoundStatus.PICK) {
-			this.status = RoundStatus.DAS;
+	public Round(Long roundId, Long centerId, Long centerRoundNumber,
+		RoundStatus status) {
+		this.roundId = roundId;
+		this.centerId = centerId;
+		this.centerRoundNumber = centerRoundNumber;
+		this.workerId = null;
+		this.status = status;
+	}
+
+	public void startPick() {
+		if (this.status == RoundStatus.READY) {
+			this.status = RoundStatus.PICK;
 		}
 	}
 
-	public void startWork() {
-		if (this.status == RoundStatus.READY) {
-			this.status = RoundStatus.PICK;
+	public void startDas(final long workerId) {
+		if (this.status == RoundStatus.PICK) {
+			this.status = RoundStatus.DAS;
+			this.workerId = workerId;
 		}
 	}
 }

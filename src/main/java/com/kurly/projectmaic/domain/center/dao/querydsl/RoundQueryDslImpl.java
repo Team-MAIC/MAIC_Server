@@ -72,4 +72,15 @@ public class RoundQueryDslImpl implements RoundQueryDsl {
 			.where(round.roundId.eq(roundId))
 			.execute();
 	}
+
+	@Override
+	public Round getUnassignedRound() {
+		return queryFactory.select(round)
+			.from(round)
+			.where(
+				round.status.eq(RoundStatus.PICK),
+				round.workerId.isNull()
+			)
+			.fetchFirst();
+	}
 }

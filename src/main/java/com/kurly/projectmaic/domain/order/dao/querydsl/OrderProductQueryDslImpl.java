@@ -13,7 +13,9 @@ import org.springframework.stereotype.Repository;
 
 import com.kurly.projectmaic.domain.order.domain.OrderProduct;
 import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductByRoundIdDto;
+import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductDto;
 import com.kurly.projectmaic.domain.order.dto.querydsl.QOrderProductByRoundIdDto;
+import com.kurly.projectmaic.domain.order.dto.querydsl.QOrderProductDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -61,6 +63,26 @@ public class OrderProductQueryDslImpl implements OrderProductQueryDsl {
 				orderInfo.roundId.eq(roundId)
 			)
 			.groupBy(orderProduct.productId)
+			.orderBy(orderProduct.productId.asc())
+			.fetch();
+	}
+
+	@Override
+	public List<OrderProductDto> getOrderProducts(final long roundId) {
+		return queryFactory.select(
+				new QOrderProductDto(
+					orderProduct.orderProductId,
+					orderInfo.orderInfoId,
+					orderProduct.productId,
+					orderProduct.amount
+				)
+			)
+			.from(orderProduct)
+			.leftJoin(orderInfo)
+			.on(orderProduct.orderInfoId.eq(orderInfo.orderInfoId))
+			.where(
+				orderInfo.roundId.eq(roundId)
+			)
 			.orderBy(orderProduct.productId.asc())
 			.fetch();
 	}
