@@ -18,6 +18,7 @@ import com.kurly.projectmaic.domain.order.domain.OrderProduct;
 import com.kurly.projectmaic.domain.order.dto.ProductRequest;
 import com.kurly.projectmaic.domain.order.dto.PurchaseRequest;
 import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductByRoundIdDto;
+import com.kurly.projectmaic.domain.order.exception.PurchaseException;
 import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
 import com.kurly.projectmaic.domain.product.dao.ProductRepository;
 import com.kurly.projectmaic.domain.product.dto.ValidProductsDto;
@@ -46,6 +47,11 @@ public class OrderInfoService {
 			.toList();
 
 		ValidProductsDto validProducts = validProducts(request, productIds);
+		List<CenterProductDto> centerProductDtos = centerProductRepository.getCenterProducts(request.centerId(), productIds);
+
+		if (productIds.size() != validProducts.count() || productIds.size() != centerProductDtos.size()) {
+			throw new PurchaseException(ResponseCode.FAIL_PURCHASE,	"");
+		}
 
 		CurrentRoundDto currentRoundDto = getCurrentRoundDto(request);
 
@@ -94,6 +100,10 @@ public class OrderInfoService {
 
 			List<ProductDto> productDtos = productRepository.getValidProductCount(productIds).products();
 			List<CenterProductDto> centerProductDtos = centerProductRepository.getCenterProducts(request.centerId(), productIds);
+
+			if (orderProducts.size() != productDtos.size() || orderProducts.size() != centerProductDtos.size()) {
+				throw new PurchaseException(ResponseCode.FAIL_PURCHASE,	"");
+			}
 
 			pickTodoRepository.bulkSave(currentRoundDto.roundId(), orderProducts, productDtos, centerProductDtos);
 		}

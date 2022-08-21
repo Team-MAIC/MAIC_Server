@@ -6,5 +6,5 @@ import com.kurly.projectmaic.domain.product.dto.ValidProductsDto;
 
 public interface ProductQueryDsl {
 
-	ValidProductsDto getValidProductCount(List<Long> productIds);
+	ValidProductsDto getValidProductCount(final List<Long> productIds);
 }

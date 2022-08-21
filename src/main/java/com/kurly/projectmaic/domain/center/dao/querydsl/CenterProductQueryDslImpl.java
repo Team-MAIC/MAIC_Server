@@ -30,7 +30,7 @@ public class CenterProductQueryDslImpl implements CenterProductQueryDsl {
 			)
 			.from(centerProduct)
 			.where(
-				centerProduct.center.centerId.in(centerId),
+				centerProduct.center.centerId.eq(centerId),
 				centerProduct.productId.in(productIds)
 			)
 			.orderBy(centerProduct.productId.asc())

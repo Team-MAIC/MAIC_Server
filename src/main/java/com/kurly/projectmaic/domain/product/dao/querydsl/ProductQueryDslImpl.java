@@ -1,6 +1,5 @@
 package com.kurly.projectmaic.domain.product.dao.querydsl;
 
-import static com.kurly.projectmaic.domain.order.domain.QOrderProduct.*;
 import static com.kurly.projectmaic.domain.product.domain.QProduct.*;
 
 import java.util.List;
@@ -21,8 +20,7 @@ public class ProductQueryDslImpl implements ProductQueryDsl {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public ValidProductsDto getValidProductCount(
-		List<Long> productIds) {
+	public ValidProductsDto getValidProductCount(final List<Long> productIds) {
 		List<ProductDto> products = queryFactory.select(
 				new QProductDto(
 					product.productId,

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.kurly.projectmaic.domain.center.exception.RoundNotFoundException;
 import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
 import com.kurly.projectmaic.domain.das.exception.DasNotFoundException;
+import com.kurly.projectmaic.domain.order.exception.PurchaseException;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoCompleteAlreadyException;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoNotFoundException;
 import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
@@ -45,6 +46,12 @@ public class GlobalHandlerController {
 	@ExceptionHandler(DasNotFoundException.class)
 	public CustomResponseEntity<Void> handleDasNotFoundException(DasNotFoundException e) {
 		log.error("dasNotFoundException: {}", e.getCode());
+		return CustomResponseEntity.fail(e.getCode());
+	}
+
+	@ExceptionHandler(PurchaseException.class)
+	public CustomResponseEntity<Void> handlePurchaseException(PurchaseException e) {
+		log.error("purchaseException: {}", e.getCode());
 		return CustomResponseEntity.fail(e.getCode());
 	}
 }
