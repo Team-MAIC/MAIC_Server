@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodoCompleteResponse;
+import com.kurly.projectmaic.global.common.constant.RedisTopic;
 import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,12 @@ public class RedisSubscriber implements MessageListener {
 	private final SimpMessageSendingOperations messageSender;
 	private final RedisMessageListenerContainer container;
 
+	@PostConstruct
+	private void init() {
+		container.addMessageListener(this, new ChannelTopic(RedisTopic.SUB));
+		container.addMessageListener(this, new ChannelTopic(RedisTopic.UNSUB));
+	}
+
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
 
@@ -36,11 +43,17 @@ public class RedisSubscriber implements MessageListener {
 
 		try {
 			assert key != null;
+			assert body != null;
+
 			CustomResponseEntity<?> response = objectMapper.readValue(body, CustomResponseEntity.class);
 
-			if (response.getCode() == -2) {
-				container.removeMessageListener(this, new ChannelTopic(key));
+			if (RedisTopic.SUB.equals(key)) {
+				container.addMessageListener(this, new ChannelTopic((String) response.getData()));
+				return;
+			}
 
+			if (RedisTopic.UNSUB.equals(key)) {
+				container.removeMessageListener(this, new ChannelTopic((String) response.getData()));
 				return;
 			}
 

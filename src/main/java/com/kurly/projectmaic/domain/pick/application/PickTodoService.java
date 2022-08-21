@@ -2,6 +2,7 @@ package com.kurly.projectmaic.domain.pick.application;
 
 import java.util.List;
 
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import com.kurly.projectmaic.domain.pick.dto.response.PickTodoResponse;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodosResponse;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoCompleteAlreadyException;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoNotFoundException;
+import com.kurly.projectmaic.global.common.constant.RedisTopic;
 import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
 import com.kurly.projectmaic.global.common.response.ResponseCode;
 import com.kurly.projectmaic.global.common.response.SocketResponseType;
@@ -78,8 +80,11 @@ public class PickTodoService {
 	}
 
 	public void subscribePickChannel(final long roundId, final CenterProductArea area) {
-		container.addMessageListener(subscriber,
-			RedisChannelUtils.getPickTodoTopic(roundId, area));
+		publisher.publish(
+			new ChannelTopic(RedisTopic.SUB),
+			CustomResponseEntity.connect(
+				RedisChannelUtils.getPickTodoTopicName(roundId, area))
+		);
 	}
 
 	@Transactional
@@ -110,8 +115,9 @@ public class PickTodoService {
 			roundRepository.updateRoundStatus(pickTodo.getRoundId(), RoundStatus.DAS);
 
 			publisher.publish(
-				RedisChannelUtils.getPickTodoTopic(pickTodo.getRoundId(), pickTodo.getArea()),
-				CustomResponseEntity.disconnect()
+				new ChannelTopic(RedisTopic.UNSUB),
+				CustomResponseEntity.disconnect(
+					RedisChannelUtils.getPickTodoTopicName(pickTodo.getRoundId(), pickTodo.getArea()))
 			);
 		}
 	}

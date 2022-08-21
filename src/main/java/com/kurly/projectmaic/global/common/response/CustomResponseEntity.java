@@ -37,8 +37,13 @@ public class CustomResponseEntity<T> {
                 responseCode.getCode(),responseCode.getMessage(), null);
     }
 
-	public static <Void> CustomResponseEntity<Void> disconnect() {
+	public static <String> CustomResponseEntity<String> connect(String topic) {
 		return new CustomResponseEntity<>(
-			ResponseCode.DISCONNECT.getCode(), null, null);
+			ResponseCode.CONNECT.getCode(), null, topic);
+	}
+
+	public static <String> CustomResponseEntity<String> disconnect(String topic) {
+		return new CustomResponseEntity<>(
+			ResponseCode.DISCONNECT.getCode(), null, topic);
 	}
 }

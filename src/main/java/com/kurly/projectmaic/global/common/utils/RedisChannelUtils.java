@@ -13,4 +13,8 @@ public class RedisChannelUtils {
 
 		return new ChannelTopic(channelName);
 	}
+
+	public static String getPickTodoTopicName(final long roundId, final CenterProductArea area) {
+		return String.format(PICK_TODOS_TOPIC_FORMAT, roundId, area);
+	}
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ResponseCode implements EnumType {
     OK(1, "성공"),
     FAIL(-1, "실패"),
+	CONNECT(2, "연결"),
 	DISCONNECT(-2, "해제"),
 
     // center response code
