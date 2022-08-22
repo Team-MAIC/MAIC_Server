@@ -124,7 +124,8 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
 					pickTodo.line,
 					pickTodo.location,
 					pickTodo.amount,
-					pickTodo.status
+					pickTodo.status,
+					pickTodo.workerId
 				)
 			)
 			.from(pickTodo)

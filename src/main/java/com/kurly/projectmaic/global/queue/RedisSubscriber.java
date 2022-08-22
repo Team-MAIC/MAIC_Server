@@ -53,7 +53,15 @@ public class RedisSubscriber implements MessageListener {
 			}
 
 			if (RedisTopic.UNSUB.equals(key)) {
-				container.removeMessageListener(this, new ChannelTopic((String) response.getData()));
+				String topicKey = (String) response.getData();
+
+				container.removeMessageListener(this, new ChannelTopic(topicKey));
+
+				if (topicKey.startsWith("das/todos")) {
+					for (int i = 0; i < 5; i++) {
+						container.removeMessageListener(this, new ChannelTopic(topicKey + i));
+					}
+				}
 				return;
 			}
 

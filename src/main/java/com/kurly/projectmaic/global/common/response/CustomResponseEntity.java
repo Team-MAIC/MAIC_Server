@@ -46,4 +46,9 @@ public class CustomResponseEntity<T> {
 		return new CustomResponseEntity<>(
 			ResponseCode.DISCONNECT.getCode(), null, topic);
 	}
+
+	public static <T> CustomResponseEntity<T> basketInit(T data) {
+		return new CustomResponseEntity<>(
+			ResponseCode.CONNECT.getCode(), null, data);
+	}
 }
