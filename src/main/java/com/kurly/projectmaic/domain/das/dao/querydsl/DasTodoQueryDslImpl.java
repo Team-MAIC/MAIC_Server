@@ -152,7 +152,7 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 		queryFactory.update(dasTodo)
 			.set(dasTodo.status, status)
 			.where(
-				dasTodo.roundId.eq(dasTodoId)
+				dasTodo.dasTodoId.eq(dasTodoId)
 			)
 			.execute();
 	}
