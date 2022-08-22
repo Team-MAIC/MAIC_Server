@@ -10,6 +10,7 @@ spring:
       data-source-properties:
         rewriteBatchedStatements: true
   jpa:
+    database: sql-server
     hibernate:
       ddl-auto: validate
     properties:
