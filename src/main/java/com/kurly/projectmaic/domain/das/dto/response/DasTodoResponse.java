@@ -8,7 +8,7 @@ public record DasTodoResponse(
 	long productId,
 	String productName,
 	int productAmount,
-	int exceptAmount,
+	int currentAmount,
 	BasketColor color,
 	BasketStatus status
 ) {

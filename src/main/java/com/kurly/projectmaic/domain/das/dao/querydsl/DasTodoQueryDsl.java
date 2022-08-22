@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.kurly.projectmaic.domain.das.domain.DasTodo;
-import com.kurly.projectmaic.domain.das.dto.response.ProductsColorResponse;
+import com.kurly.projectmaic.domain.das.dto.querydsl.ProductsColorDto;
 import com.kurly.projectmaic.domain.das.enumeration.BasketColor;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductDto;
@@ -18,8 +18,11 @@ public interface DasTodoQueryDsl {
 
 	List<DasTodo> getDasTodos(final long roundId, final BasketStatus status, final BasketColor color);
 
-	List<ProductsColorResponse> getUsedColor(final long roundId);
+	List<ProductsColorDto> getUsedColor(final long roundId);
 	void updateColor(final long roundId, final long productId, final BasketColor color);
 	void updateStatus(final long dasTodoId, BasketStatus status);
 	DasTodo nextDasTodo(final DasTodo originDasTodo);
+
+	void completeStatus(final DasTodo dasTodo);
+	void updateWeight(final DasTodo originDasTodo, final double basketWeight);
 }

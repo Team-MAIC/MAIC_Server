@@ -1,6 +1,6 @@
 package com.kurly.projectmaic.domain.das.api;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import com.kurly.projectmaic.domain.das.dto.response.BasketColorResponse;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,12 +21,10 @@ public class BasketController {
 	private final BasketService basketService;
 
 	@PostMapping("/{dasTodoId}")
-	public CustomResponseEntity<Void> completeDasTodo(
+	public CustomResponseEntity<BasketColorResponse> completeDasTodo(
 		@PathVariable final long dasTodoId,
 		@RequestBody final BasketValidRequest request
 	) {
-		basketService.completeDasTodo(dasTodoId, request.basketWeight());
-
-		return CustomResponseEntity.success();
+		return CustomResponseEntity.success(basketService.completeDasTodo(dasTodoId, request.basketWeight()));
 	}
 }

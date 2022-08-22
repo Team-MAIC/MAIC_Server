@@ -9,12 +9,13 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import com.kurly.projectmaic.domain.das.dto.querydsl.ProductsColorDto;
+import com.kurly.projectmaic.domain.das.dto.querydsl.QProductsColorDto;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kurly.projectmaic.domain.das.domain.DasTodo;
-import com.kurly.projectmaic.domain.das.dto.response.ProductsColorResponse;
 import com.kurly.projectmaic.domain.das.enumeration.BasketColor;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 import com.kurly.projectmaic.domain.model.StatusType;
@@ -98,8 +99,13 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 			.fetch();
 	}
 
-	public List<ProductsColorResponse> getUsedColor(final long roundId) {
-		var dasTodos = queryFactory.select(dasTodo)
+	public List<ProductsColorDto> getUsedColor(final long roundId) {
+		return queryFactory.select(
+				new QProductsColorDto(
+					dasTodo.basketColor,
+					dasTodo.productName
+				)
+			)
 			.from(dasTodo)
 			.where(
 				dasTodo.roundId.eq(roundId),
@@ -107,12 +113,8 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 				dasTodo.basketColor.isNotNull(),
 				eqColor(BasketColor.ALL)
 			)
-			.groupBy(dasTodo.basketColor)
+			.groupBy(dasTodo.basketColor, dasTodo.productName)
 			.fetch();
-
-		return dasTodos.stream()
-			.map(dasTodo -> new ProductsColorResponse(dasTodo.getBasketColor(), dasTodo.getProductName()))
-			.toList();
 	}
 
 	private BooleanExpression eqStatus(BasketStatus status) {
@@ -166,11 +168,35 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 				dasTodo.passage.eq(originDasTodo.getPassage()),
 				dasTodo.roundId.eq(originDasTodo.getRoundId()),
 				dasTodo.basketNum.eq(originDasTodo.getBasketNum()),
-				dasTodo.status.ne(BasketStatus.FINISH)
+				dasTodo.status.ne(BasketStatus.FINISH),
+				dasTodo.basketColor.isNotNull()
 			)
 			.orderBy(dasTodo.modifiedAt.asc())
 			.limit(1)
 			.fetchFirst();
 
+	}
+
+	@Override
+	public void completeStatus(final DasTodo originDasTodo) {
+		queryFactory.update(dasTodo)
+			.set(dasTodo.status, BasketStatus.FINISH)
+			.where(
+				dasTodo.dasTodoId.eq(originDasTodo.getDasTodoId())
+			)
+			.execute();
+	}
+
+	public void updateWeight(final DasTodo originDasTodo, final double basketWeight) {
+		queryFactory.update(dasTodo)
+			.set(dasTodo.basketWeight, basketWeight)
+			.where(
+				dasTodo.status.ne(BasketStatus.FINISH),
+				dasTodo.centerId.eq(originDasTodo.getCenterId()),
+				dasTodo.roundId.eq(originDasTodo.getRoundId()),
+				dasTodo.passage.eq(originDasTodo.getPassage()),
+				dasTodo.basketNum.eq(originDasTodo.getBasketNum())
+			)
+			.execute();
 	}
 }
