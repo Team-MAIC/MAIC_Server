@@ -56,10 +56,11 @@ public class DasTodoController {
 	}
 
 	@PutMapping("/{roundId}/products/{productId}")
-	public CustomResponseEntity<BasketsInfoResponse> updateColor(
+	public CustomResponseEntity<Void> updateColor(
 		@PathVariable final long roundId,
 		@PathVariable final long productId
 	) {
-		return CustomResponseEntity.success(dasTodoService.updateColor(roundId, productId));
+		dasTodoService.updateColor(roundId, productId);
+		return CustomResponseEntity.success();
 	}
 }

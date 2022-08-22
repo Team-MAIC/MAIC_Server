@@ -135,6 +135,7 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 		return dasTodo.basketColor.eq(color);
 	}
 
+	@Override
 	public void updateColor(final long roundId, final long productId, final BasketColor color) {
 		queryFactory.update(dasTodo)
 			.set(dasTodo.basketColor, color)
@@ -144,5 +145,32 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 				dasTodo.productId.eq(productId)
 			)
 			.execute();
+	}
+
+	@Override
+	public void updateStatus(final long dasTodoId, BasketStatus status) {
+		queryFactory.update(dasTodo)
+			.set(dasTodo.status, status)
+			.where(
+				dasTodo.roundId.eq(dasTodoId)
+			)
+			.execute();
+	}
+
+	@Override
+	public DasTodo nextDasTodo(final DasTodo originDasTodo) {
+		return queryFactory.select(dasTodo)
+			.from(dasTodo)
+			.where(
+				dasTodo.centerId.eq(originDasTodo.getCenterId()),
+				dasTodo.passage.eq(originDasTodo.getPassage()),
+				dasTodo.roundId.eq(originDasTodo.getRoundId()),
+				dasTodo.basketNum.eq(originDasTodo.getBasketNum()),
+				dasTodo.status.ne(BasketStatus.FINISH)
+			)
+			.orderBy(dasTodo.modifiedAt.asc())
+			.limit(1)
+			.fetchFirst();
+
 	}
 }

@@ -20,4 +20,6 @@ public interface DasTodoQueryDsl {
 
 	List<ProductsColorResponse> getUsedColor(final long roundId);
 	void updateColor(final long roundId, final long productId, final BasketColor color);
+	void updateStatus(final long dasTodoId, BasketStatus status);
+	DasTodo nextDasTodo(final DasTodo originDasTodo);
 }
