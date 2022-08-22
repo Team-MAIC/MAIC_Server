@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kurly.projectmaic.domain.das.domain.DasTodo;
+import com.kurly.projectmaic.domain.das.dto.response.ProductsColorResponse;
 import com.kurly.projectmaic.domain.das.enumeration.BasketColor;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 import com.kurly.projectmaic.domain.model.StatusType;
@@ -97,7 +98,7 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 			.fetch();
 	}
 
-	public List<BasketColor> getUsedColor(final long roundId) {
+	public List<ProductsColorResponse> getUsedColor(final long roundId) {
 		var dasTodos = queryFactory.select(dasTodo)
 			.from(dasTodo)
 			.where(
@@ -110,7 +111,7 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 			.fetch();
 
 		return dasTodos.stream()
-			.map(DasTodo::getBasketColor)
+			.map(dasTodo -> new ProductsColorResponse(dasTodo.getBasketColor(), dasTodo.getProductName()))
 			.toList();
 	}
 

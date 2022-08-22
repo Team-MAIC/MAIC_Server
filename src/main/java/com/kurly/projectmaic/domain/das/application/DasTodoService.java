@@ -25,10 +25,10 @@ import com.kurly.projectmaic.domain.das.dto.response.BasketsInfoResponse;
 import com.kurly.projectmaic.domain.das.dto.response.DasTodoResponse;
 import com.kurly.projectmaic.domain.das.dto.response.DasTodoSummaryResponse;
 import com.kurly.projectmaic.domain.das.dto.response.BasketInfoResponse;
+import com.kurly.projectmaic.domain.das.dto.response.ProductsColorResponse;
 import com.kurly.projectmaic.domain.das.enumeration.BasketColor;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 import com.kurly.projectmaic.domain.das.exception.EveryBasketColorsUsedException;
-import com.kurly.projectmaic.domain.model.CenterProductArea;
 import com.kurly.projectmaic.domain.order.dao.OrderInfoRepository;
 import com.kurly.projectmaic.domain.order.dao.OrderProductRepository;
 import com.kurly.projectmaic.domain.order.dto.querydsl.OrderInfoIdByRoundDto;
@@ -145,7 +145,8 @@ public class DasTodoService {
 					todo.getProductId(),
 					todo.getProductName(),
 					todo.getProductAmount(),
-					todo.getBasketColor()
+					todo.getBasketColor(),
+					todo.getStatus()
 				);
 			}
 
@@ -157,26 +158,33 @@ public class DasTodoService {
 			);
 		}
 
+		List<ProductsColorResponse> colors = dasTodoRepository.getUsedColor(roundId);
 
-		return new BasketsInfoResponse(basketInfoResponses);
+		return new BasketsInfoResponse(colors, basketInfoResponses);
 	}
 
 	@Transactional
-	public void updateColor(long roundId, long productId) {
-		List<BasketColor> colors = dasTodoRepository.getUsedColor(roundId);
+	public BasketsInfoResponse updateColor(long roundId, long productId) {
+		List<ProductsColorResponse> colors = dasTodoRepository.getUsedColor(roundId);
+
+		List<BasketColor> basketColors = colors.stream()
+			.map(ProductsColorResponse::color)
+			.toList();
 
 		if (colors.size() == 4) {
 			throw new EveryBasketColorsUsedException(USED_EVERY_COLORS, "");
 		}
 
 		BasketColor color = Arrays.stream(BasketColor.values())
-			.filter(c -> !colors.contains(c))
+			.filter(c -> !basketColors.contains(c))
 			.filter(c -> c != BasketColor.ALL &&
 				c != BasketColor.BLACK)
 			.findFirst()
 			.orElseThrow(() -> new EveryBasketColorsUsedException(USED_EVERY_COLORS, ""));
 
 		dasTodoRepository.updateColor(roundId, productId, color);
+
+		return this.getDasTodos(roundId, BasketStatus.ALL, BasketColor.ALL);
 	}
 
 	public void subscribeSubTodo(final long centerId, final int area) {
