@@ -80,7 +80,7 @@ public class RoundQueryDslImpl implements RoundQueryDsl {
 			.from(round)
 			.where(
 				round.status.eq(RoundStatus.PICK),
-				round.workerId.isNull()
+				round.passage.isNull()
 			)
 			.fetchFirst();
 	}

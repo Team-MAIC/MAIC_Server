@@ -26,8 +26,8 @@ public class Round extends BaseEntity {
     @Column(name = "center_round_number")
     private Long centerRoundNumber;
 
-	@Column(name = "worker_id")
-	private Long workerId;
+	@Column(name = "passage")
+	private Integer passage;
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
@@ -38,7 +38,7 @@ public class Round extends BaseEntity {
 		this.roundId = roundId;
 		this.centerId = centerId;
 		this.centerRoundNumber = centerRoundNumber;
-		this.workerId = null;
+		this.passage = null;
 		this.status = status;
 	}
 
@@ -48,10 +48,10 @@ public class Round extends BaseEntity {
 		}
 	}
 
-	public void startDas(final long workerId) {
+	public void startDas(final int passage) {
 		if (this.status == RoundStatus.PICK) {
 			this.status = RoundStatus.DAS;
-			this.workerId = workerId;
+			this.passage = passage;
 		}
 	}
 }

@@ -3,7 +3,6 @@ package com.kurly.projectmaic.domain.pick.application;
 import java.util.List;
 
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +10,6 @@ import com.kurly.projectmaic.domain.center.dao.RoundRepository;
 import com.kurly.projectmaic.domain.center.domain.Round;
 import com.kurly.projectmaic.domain.center.enumeration.RoundStatus;
 import com.kurly.projectmaic.domain.center.exception.RoundNotFoundException;
-import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
 import com.kurly.projectmaic.domain.model.CenterProductArea;
 import com.kurly.projectmaic.domain.model.StatusType;
 import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
@@ -22,6 +20,7 @@ import com.kurly.projectmaic.domain.pick.dto.response.PickTodoCompleteResponse;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodoResponse;
 import com.kurly.projectmaic.domain.pick.dto.response.PickTodosResponse;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoCompleteAlreadyException;
+import com.kurly.projectmaic.domain.pick.exception.PickTodoFilterType;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoNotFoundException;
 import com.kurly.projectmaic.global.common.constant.RedisTopic;
 import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
@@ -29,7 +28,6 @@ import com.kurly.projectmaic.global.common.response.ResponseCode;
 import com.kurly.projectmaic.global.common.response.SocketResponseType;
 import com.kurly.projectmaic.global.common.utils.RedisChannelUtils;
 import com.kurly.projectmaic.global.queue.RedisPublisher;
-import com.kurly.projectmaic.global.queue.RedisSubscriber;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,13 +37,12 @@ public class PickTodoService {
 
 	private final PickTodoRepository pickTodoRepository;
 	private final RoundRepository roundRepository;
-	private final RedisMessageListenerContainer container;
-	private final RedisSubscriber subscriber;
 	private final RedisPublisher publisher;
 
 	@Transactional
-	public PickTodosResponse getPickTodos(final long roundId, final CenterProductArea area) {
-		List<PickTodoDto> dtos = pickTodoRepository.getPickTodos(roundId, area);
+	public PickTodosResponse getPickTodos(final long roundId, final CenterProductArea area, final long workerId,
+		final PickTodoFilterType filterType) {
+		List<PickTodoDto> dtos = pickTodoRepository.getPickTodos(roundId, area, workerId, filterType);
 
 		List<PickTodoResponse> todos = dtos.stream()
 			.map(dto -> new PickTodoResponse(
@@ -56,7 +53,9 @@ public class PickTodoService {
 				dto.area(),
 				dto.line(),
 				dto.location(),
-				dto.amount()
+				dto.amount(),
+				dto.status(),
+				dto.workerId()
 			))
 			.toList();
 
@@ -80,6 +79,7 @@ public class PickTodoService {
 	}
 
 	public void subscribePickChannel(final long roundId, final CenterProductArea area) {
+
 		publisher.publish(
 			new ChannelTopic(RedisTopic.SUB),
 			CustomResponseEntity.connect(
@@ -97,7 +97,8 @@ public class PickTodoService {
 
 		PickTodoCompleteResponse response = new PickTodoCompleteResponse(
 			SocketResponseType.PICK_TODO_COMPLETE,
-			pickTodoId
+			pickTodoId,
+			workerId
 		);
 
 		publisher.publish(

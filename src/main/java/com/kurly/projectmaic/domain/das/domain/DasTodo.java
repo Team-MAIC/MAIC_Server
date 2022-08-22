@@ -1,5 +1,6 @@
 package com.kurly.projectmaic.domain.das.domain;
 
+import com.kurly.projectmaic.domain.das.enumeration.BasketColor;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 import com.kurly.projectmaic.domain.model.BaseEntity;
 import com.kurly.projectmaic.domain.model.StatusType;
@@ -22,15 +23,21 @@ public class DasTodo extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dasTodoId;
 
-    @ManyToOne
-    @JoinColumn(name = "das_basket_color_id")
-    private DasBasketColor dasBasketColor;
+	@Column(name = "basket_color")
+	@Enumerated(value = EnumType.STRING)
+	private BasketColor basketColor;
 
-    @Column(name = "order_info_id")
-    private Long orderInfoId;
+	@Column(name = "center_id")
+	private Long centerId;
+
+	@Column(name = "passage")
+	private int passage;
 
 	@Column(name = "roundId")
 	private Long roundId;
+
+	@Column(name = "order_info_id")
+	private Long orderInfoId;
 
     @Column(name = "product_id")
     private Long productId;
@@ -52,5 +59,5 @@ public class DasTodo extends BaseEntity {
 
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
-    private StatusType status;
+    private BasketStatus status;
 }

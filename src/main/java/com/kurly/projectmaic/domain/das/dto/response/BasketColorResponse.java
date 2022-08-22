@@ -3,13 +3,10 @@ package com.kurly.projectmaic.domain.das.dto.response;
 import com.kurly.projectmaic.domain.das.enumeration.BasketColor;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 
-public record DasTodoResponse(
-	long roundId,
-	long productId,
-	String productName,
-	int productAmount,
-	int currentAmount,
+public record BasketColorResponse(
+	long dasTodoId,
+	BasketStatus status,
 	BasketColor color,
-	BasketStatus status
+	long amount
 ) {
 }

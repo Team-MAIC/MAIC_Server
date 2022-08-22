@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.kurly.projectmaic.domain.center.dto.querydsl.CenterProductDto;
 import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductByRoundIdDto;
+import com.kurly.projectmaic.domain.pick.exception.PickTodoFilterType;
 import com.kurly.projectmaic.domain.product.dto.querydsl.ProductDto;
 import com.kurly.projectmaic.global.common.expression.OrderByNull;
 
@@ -22,6 +23,7 @@ import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoCountDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.QPickTodoCountDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.QPickTodoDto;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -110,7 +112,8 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
     }
 
 	@Override
-	public List<PickTodoDto> getPickTodos(final long roundId, final CenterProductArea area) {
+	public List<PickTodoDto> getPickTodos(final long roundId, final CenterProductArea area, final long workerId,
+		final PickTodoFilterType filterType) {
 		return queryFactory.select(
 				new QPickTodoDto(
 					pickTodo.pickTodoId,
@@ -120,15 +123,34 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
 					pickTodo.area,
 					pickTodo.line,
 					pickTodo.location,
-					pickTodo.amount
+					pickTodo.amount,
+					pickTodo.status,
+					pickTodo.workerId
 				)
 			)
 			.from(pickTodo)
 			.where(
+				isFiltered(workerId, filterType),
 				pickTodo.roundId.eq(roundId),
 				pickTodo.area.eq(area)
 			)
 			.orderBy(pickTodo.line.asc(), pickTodo.location.asc())
 			.fetch();
+	}
+
+	private BooleanExpression isFiltered(final long workerId, final PickTodoFilterType filterType) {
+		if (filterType == PickTodoFilterType.ING) {
+			return pickTodo.status.eq(StatusType.READY);
+		}
+
+		if (filterType == PickTodoFilterType.FINISH) {
+			return pickTodo.status.eq(StatusType.FINISH);
+		}
+
+		if (filterType == PickTodoFilterType.MY_FINISH) {
+			return pickTodo.workerId.eq(workerId);
+		}
+
+		return null;
 	}
 }

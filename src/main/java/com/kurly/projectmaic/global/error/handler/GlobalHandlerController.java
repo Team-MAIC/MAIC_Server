@@ -1,5 +1,7 @@
 package com.kurly.projectmaic.global.error.handler;
 
+import com.kurly.projectmaic.domain.das.exception.DasTodoAlreadyException;
+import com.kurly.projectmaic.domain.das.exception.DasTodoFoundNotException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -46,6 +48,18 @@ public class GlobalHandlerController {
 	@ExceptionHandler(DasNotFoundException.class)
 	public CustomResponseEntity<Void> handleDasNotFoundException(DasNotFoundException e) {
 		log.error("dasNotFoundException: {}", e.getCode());
+		return CustomResponseEntity.fail(e.getCode());
+	}
+
+	@ExceptionHandler(DasTodoAlreadyException.class)
+	public CustomResponseEntity<Void> handleDasTodoAlreadyException(DasTodoAlreadyException e) {
+		log.error("dasTodoAlreadyException: {}", e.getCode());
+		return CustomResponseEntity.fail(e.getCode());
+	}
+
+	@ExceptionHandler(DasTodoFoundNotException.class)
+	public CustomResponseEntity<Void> handleDasTodoAlreadyException(DasTodoFoundNotException e) {
+		log.error("dasTodoFoundNotException: {}", e.getCode());
 		return CustomResponseEntity.fail(e.getCode());
 	}
 
