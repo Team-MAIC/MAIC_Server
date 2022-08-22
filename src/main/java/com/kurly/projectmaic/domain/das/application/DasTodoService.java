@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import com.kurly.projectmaic.domain.das.dto.response.BasketInfoResponse;
 import com.kurly.projectmaic.domain.das.enumeration.BasketColor;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 import com.kurly.projectmaic.domain.das.exception.EveryBasketColorsUsedException;
+import com.kurly.projectmaic.domain.model.CenterProductArea;
 import com.kurly.projectmaic.domain.order.dao.OrderInfoRepository;
 import com.kurly.projectmaic.domain.order.dao.OrderProductRepository;
 import com.kurly.projectmaic.domain.order.dto.querydsl.OrderInfoIdByRoundDto;
@@ -34,7 +36,11 @@ import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductDto;
 import com.kurly.projectmaic.domain.das.exception.DasNotFoundException;
 import com.kurly.projectmaic.domain.product.dao.ProductRepository;
 import com.kurly.projectmaic.domain.product.dto.ValidProductsDto;
+import com.kurly.projectmaic.global.common.constant.RedisTopic;
+import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
 import com.kurly.projectmaic.global.common.response.ResponseCode;
+import com.kurly.projectmaic.global.common.utils.RedisChannelUtils;
+import com.kurly.projectmaic.global.queue.RedisPublisher;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,9 +54,10 @@ public class DasTodoService {
 	private final OrderInfoRepository orderInfoRepository;
 	private final RoundRepository roundRepository;
 	private final ProductRepository productRepository;
+	private final RedisPublisher publisher;
 
 	@Transactional
-	public DasTodoSummaryResponse getDasRounds(final long workerId, final long centerID) {
+	public DasTodoSummaryResponse refreshDasTodos(final long workerId, final long centerID) {
 		Round round = getRound(workerId, centerID);
 
 		List<Long> orderIds = getOrderIds(round.getRoundId());
@@ -170,5 +177,22 @@ public class DasTodoService {
 			.orElseThrow(() -> new EveryBasketColorsUsedException(USED_EVERY_COLORS, ""));
 
 		dasTodoRepository.updateColor(roundId, productId, color);
+	}
+
+	public void subscribeSubTodo(final long centerId, final int area) {
+
+		publisher.publish(
+			new ChannelTopic(RedisTopic.SUB),
+			CustomResponseEntity.connect(
+				RedisChannelUtils.getDasTodoTopicName(centerId, area))
+		);
+
+		for (int i = 0; i < 5; i++) {
+			publisher.publish(
+				new ChannelTopic(RedisTopic.SUB),
+				CustomResponseEntity.connect(
+					RedisChannelUtils.getDasTodoTopicName(centerId, area) + "/" + i)
+			);
+		}
 	}
 }
