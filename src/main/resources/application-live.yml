@@ -10,7 +10,7 @@ spring:
       data-source-properties:
         rewriteBatchedStatements: true
   jpa:
-    database: sql-server
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: validate
     properties:
