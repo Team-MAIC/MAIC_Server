@@ -1,0 +1,23 @@
+spring:
+  config:
+    activate:
+      on-profile: live
+  datasource:
+    url: jdbc:mysql://dbcluster-maic.cluster-cce8wasevxyi.ap-northeast-2.rds.amazonaws.com:3306/maic_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC
+    username: dbuser
+    password: projectmaic
+    hikari:
+      data-source-properties:
+        rewriteBatchedStatements: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+      logging.level:
+        org.hibernate.SQL: debug
+    show-sql: true
+  redis:
+    host: redis-maic2.mjobgv.ng.0001.apn2.cache.amazonaws.com
+    port: 6379
