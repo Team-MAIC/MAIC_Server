@@ -54,7 +54,8 @@ public class PickTodoService {
 				dto.line(),
 				dto.location(),
 				dto.amount(),
-				dto.status()
+				dto.status(),
+				dto.workerId()
 			))
 			.toList();
 
@@ -96,7 +97,8 @@ public class PickTodoService {
 
 		PickTodoCompleteResponse response = new PickTodoCompleteResponse(
 			SocketResponseType.PICK_TODO_COMPLETE,
-			pickTodoId
+			pickTodoId,
+			workerId
 		);
 
 		publisher.publish(

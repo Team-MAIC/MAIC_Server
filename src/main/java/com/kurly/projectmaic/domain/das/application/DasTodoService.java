@@ -57,8 +57,8 @@ public class DasTodoService {
 	private final RedisPublisher publisher;
 
 	@Transactional
-	public DasTodoSummaryResponse refreshDasTodos(final long workerId, final long centerID) {
-		Round round = getRound(workerId, centerID);
+	public DasTodoSummaryResponse refreshDasTodos(final long centerID, final int passage) {
+		Round round = getRound(centerID, passage);
 
 		List<Long> orderIds = getOrderIds(round.getRoundId());
 
@@ -79,7 +79,7 @@ public class DasTodoService {
 
 		ValidProductsDto validProductsDto = productRepository.getValidProductCount(productIds);
 
-		dasTodoRepository.bulkSave(workerId, orderProductDtos, validProductsDto.products(), baskets);
+		dasTodoRepository.bulkSave(centerID, passage, round.getRoundId(), orderProductDtos, validProductsDto.products(), baskets);
 
 		List<BasketResponse> basketResponses = dasBaskets.stream()
 			.map(dasBasket -> new BasketResponse(dasBasket.getBasketNum(),
@@ -90,8 +90,8 @@ public class DasTodoService {
 		return new DasTodoSummaryResponse(round.getRoundId(), basketResponses);
 	}
 
-	private Round getRound(final long workerId, final long centerId) {
-		Round round = roundRepository.findByWorkerIdAndCenterIdAndStatus(workerId, centerId, RoundStatus.DAS)
+	private Round getRound(final long centerId, final int passage) {
+		Round round = roundRepository.findByCenterIdAndPassageAndStatus(centerId, passage, RoundStatus.DAS)
 			.orElse(null);
 
 		if (round != null) {
@@ -104,7 +104,7 @@ public class DasTodoService {
 			throw new DasNotFoundException(ResponseCode.NOT_FOUND_DAS_TODO, "");
 		}
 
-		round.startDas(workerId);
+		round.startDas(passage);
 
 		roundRepository.save(round);
 

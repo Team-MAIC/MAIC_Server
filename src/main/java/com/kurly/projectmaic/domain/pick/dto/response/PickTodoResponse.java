@@ -12,6 +12,7 @@ public record PickTodoResponse(
 	int line,
 	int location,
 	long amount,
-	StatusType status
+	StatusType status,
+	long workerId
 ) {
 }

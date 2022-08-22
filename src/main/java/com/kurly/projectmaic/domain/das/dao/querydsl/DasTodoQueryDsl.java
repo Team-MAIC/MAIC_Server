@@ -10,7 +10,7 @@ import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductDto;
 import com.kurly.projectmaic.domain.product.dto.querydsl.ProductDto;
 
 public interface DasTodoQueryDsl {
-	void bulkSave(final long roundId,
+	void bulkSave(final long centerId, final int passage, final long roundId,
 		final List<OrderProductDto> orderProductDtos,
 		List<ProductDto> products,
 		final Map<Long, Integer> baskets);

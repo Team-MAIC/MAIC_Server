@@ -36,15 +36,16 @@ class ProductControllerTest extends ControllerTest{
 		// given
 		ProductInfoResponse response = new ProductInfoResponse(
 			1L,
-			"친환경 노루궁뎅이 버섯"
+			"친환경 노루궁뎅이 버섯",
+			"https://img.project-maic/product/test.jpg"
 		);
 
 		// when
-		given(productService.getProductInfo("2304023748221"))
+		given(productService.getProductInfoByBarcode("2304023748221"))
 			.willReturn(response);
 
 		ResultActions result = mockMvc.perform(
-			get("/products/{barcode}", "2304023748221")
+			get("/products/barcode/{barcode}", "2304023748221")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 		);
@@ -62,7 +63,8 @@ class ProductControllerTest extends ControllerTest{
 						fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
 						fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메세지"),
 						fieldWithPath("data.productId").type(JsonFieldType.NUMBER).description("상품 id"),
-						fieldWithPath("data.productName").type(JsonFieldType.STRING).description("상품 이름")
+						fieldWithPath("data.productName").type(JsonFieldType.STRING).description("상품 이름"),
+						fieldWithPath("data.productThumbnail").type(JsonFieldType.STRING).description("상품 이미지")
 					)
 			));
 	}

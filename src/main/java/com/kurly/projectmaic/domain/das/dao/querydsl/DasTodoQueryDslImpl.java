@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,7 +33,7 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 	private final JdbcTemplate jdbcTemplate;
 
 	@Override
-	public void bulkSave(final long roundId,
+	public void bulkSave(final long centerId, final int passage, final long roundId,
 		final List<OrderProductDto> orderProductDtos,
 		List<ProductDto> products,
 		final Map<Long, Integer> baskets) {
@@ -42,26 +41,28 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 		long now = Instant.now().toEpochMilli();
 
 		jdbcTemplate.batchUpdate("INSERT INTO das_todo ("
-				+ "round_id, order_info_id, product_id, product_name, product_weight, product_amount, basket_num, basket_weight, status, created_at, modified_at"
+				+ "center_id, passage, round_id, order_info_id, product_id, product_name, product_weight, product_amount, basket_num, basket_weight, status, created_at, modified_at"
 				+ ") VALUES ("
-				+ "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				+ "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 			new BatchPreparedStatementSetter() {
 				@Override
 				public void setValues(PreparedStatement ps, int i) throws SQLException {
 					OrderProductDto dto = orderProductDtos.get(i);
 					ProductDto productDto = getProductDto(dto.productId());
 
-					ps.setLong(1, roundId);
-					ps.setLong(2, dto.orderInfoId());
-					ps.setLong(3, dto.productId());
-					ps.setString(4, productDto.productName());
-					ps.setDouble(5, productDto.weight());
-					ps.setDouble(6, dto.amount());
-					ps.setInt( 7, baskets.get(dto.orderInfoId()));
-					ps.setDouble(8, 0);
-					ps.setString(9, StatusType.READY.name());
-					ps.setLong(10, now);
-					ps.setLong(11, now);
+					ps.setLong(1, centerId);
+					ps.setLong(2, passage);
+					ps.setLong(3, roundId);
+					ps.setLong(4, dto.orderInfoId());
+					ps.setLong(5, dto.productId());
+					ps.setString(6, productDto.productName());
+					ps.setDouble(7, productDto.weight());
+					ps.setDouble(8, dto.amount());
+					ps.setInt( 9, baskets.get(dto.orderInfoId()));
+					ps.setDouble(10, 0);
+					ps.setString(11, StatusType.READY.name());
+					ps.setLong(12, now);
+					ps.setLong(13, now);
 				}
 
 				private ProductDto getProductDto(final long productId) {

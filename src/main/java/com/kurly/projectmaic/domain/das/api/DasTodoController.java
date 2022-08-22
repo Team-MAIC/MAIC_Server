@@ -32,9 +32,9 @@ public class DasTodoController {
 
 	@GetMapping("/refresh")
 	public CustomResponseEntity<DasTodoSummaryResponse> getCurrentDasInfo(
-		@RequestHeader(WORKER_ID) final long workerId,
-		@RequestParam final long centerId) {
-		return CustomResponseEntity.success(dasTodoService.refreshDasTodos(workerId, centerId));
+		@RequestParam final long centerId,
+		@RequestParam final int passage) {
+		return CustomResponseEntity.success(dasTodoService.refreshDasTodos(centerId, passage));
 	}
 
 	@PostMapping("/subscribe")

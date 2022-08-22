@@ -23,18 +23,21 @@ public class DasTodo extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long dasTodoId;
 
-	// @Column(name = "das_basket_color_id")
-    // private Long dasBasketColorId;
-
 	@Column(name = "basket_color")
 	@Enumerated(value = EnumType.STRING)
 	private BasketColor basketColor;
 
-    @Column(name = "order_info_id")
-    private Long orderInfoId;
+	@Column(name = "center_id")
+	private Long centerId;
+
+	@Column(name = "passage")
+	private int passage;
 
 	@Column(name = "roundId")
 	private Long roundId;
+
+	@Column(name = "order_info_id")
+	private Long orderInfoId;
 
     @Column(name = "product_id")
     private Long productId;
