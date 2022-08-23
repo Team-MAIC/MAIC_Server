@@ -70,14 +70,19 @@ public class DasTodoService {
 		Map<Long, Integer> baskets = dasBaskets.stream()
 			.collect(Collectors.toMap(DasBasket::getOrderInfoId, DasBasket::getBasketNum));
 
-		List<OrderProductDto> orderProductDtos = orderProductRepository.getOrderProducts(round.getRoundId());
-		List<Long> productIds = orderProductDtos.stream()
+		if (round.getPassage() == null) {
+			List<OrderProductDto> orderProductDtos = orderProductRepository.getOrderProducts(round.getRoundId());
+			List<Long> productIds = orderProductDtos.stream()
 				.map(OrderProductDto::productId)
 				.toList();
 
-		ValidProductsDto validProductsDto = productRepository.getValidProductCount(productIds);
 
-		dasTodoRepository.bulkSave(centerID, passage, round.getRoundId(), orderProductDtos, validProductsDto.products(), baskets);
+			ValidProductsDto validProductsDto = productRepository.getValidProductCount(productIds);
+			dasTodoRepository.bulkSave(centerID, passage, round.getRoundId(), orderProductDtos, validProductsDto.products(), baskets);
+
+			round.startDas(passage);
+			roundRepository.save(round);
+		}
 
 		List<BasketResponse> basketResponses = dasBaskets.stream()
 			.map(dasBasket -> new BasketResponse(dasBasket.getBasketNum(),
@@ -89,7 +94,7 @@ public class DasTodoService {
 	}
 
 	private Round getRound(final long centerId, final int passage) {
-		Round round = roundRepository.findByCenterIdAndPassageAndStatus(centerId, passage, RoundStatus.DAS)
+		Round round = roundRepository.getLastRoundByPassage(centerId, passage)
 			.orElse(null);
 
 		if (round != null) {
@@ -101,10 +106,6 @@ public class DasTodoService {
 		if (round == null) {
 			throw new DasNotFoundException(ResponseCode.NOT_FOUND_DAS, "");
 		}
-
-		round.startDas(passage);
-
-		roundRepository.save(round);
 
 		return round;
 	}
