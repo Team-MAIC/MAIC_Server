@@ -90,7 +90,7 @@ public class DasTodoService {
 			)
 			.toList();
 
-		return new DasTodoSummaryResponse(round.getRoundId(), basketResponses);
+		return new DasTodoSummaryResponse(round.getRoundId(), round.getCenterRoundNumber(), basketResponses);
 	}
 
 	private Round getRound(final long centerId, final int passage) {
