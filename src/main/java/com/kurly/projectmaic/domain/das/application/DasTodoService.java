@@ -1,5 +1,6 @@
 package com.kurly.projectmaic.domain.das.application;
 
+import static com.kurly.projectmaic.global.common.constant.PIckDasCount.PICK_DAS_COUNT;
 import static com.kurly.projectmaic.global.common.response.ResponseCode.*;
 
 import java.util.ArrayList;
@@ -142,7 +143,7 @@ public class DasTodoService {
 
 		List<BasketInfoResponse> basketInfoResponses = new ArrayList<>(todos.size());
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < PICK_DAS_COUNT; i++) {
 			DasTodo todo = map.get(i);
 			DasTodoResponse dasTodoResponse = null;
 			BasketColorResponse basketColorResponse = null;
@@ -222,7 +223,7 @@ public class DasTodoService {
 			}
 		});
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < PICK_DAS_COUNT; i++) {
 			DasTodo todo = map.get(i);
 			BasketColorResponse basketColorResponse = null;
 
@@ -252,7 +253,7 @@ public class DasTodoService {
 				RedisChannelUtils.getDasTodoTopicName(centerId, passage))
 		);
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < PICK_DAS_COUNT; i++) {
 			publisher.publish(
 				new ChannelTopic(RedisTopic.SUB),
 				CustomResponseEntity.connect(

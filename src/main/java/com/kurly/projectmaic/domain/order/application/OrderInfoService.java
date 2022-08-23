@@ -28,6 +28,8 @@ import com.kurly.projectmaic.global.common.response.ResponseCode;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.kurly.projectmaic.global.common.constant.PIckDasCount.PICK_DAS_COUNT;
+
 @Service
 @RequiredArgsConstructor
 public class OrderInfoService {
@@ -81,7 +83,7 @@ public class OrderInfoService {
 	private void checkCompletedRound(PurchaseRequest request, CurrentRoundDto currentRoundDto) {
 		long roundOrdersCount = orderInfoRepository.countByRoundId(currentRoundDto.roundId());
 
-		if (roundOrdersCount == 5) {
+		if (roundOrdersCount == PICK_DAS_COUNT) {
 			roundRepository.updateRoundStatus(currentRoundDto.roundId(), RoundStatus.READY);
 
 			Round round = new Round(
