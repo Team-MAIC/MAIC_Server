@@ -19,6 +19,8 @@ import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.kurly.projectmaic.global.common.constant.PIckDasCount.PICK_DAS_COUNT;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -67,7 +69,7 @@ public class RedisSubscriber implements MessageListener {
 				container.removeMessageListener(this, new ChannelTopic(topicKey));
 
 				if (topicKey.startsWith("das/todos")) {
-					for (int i = 0; i < 5; i++) {
+					for (int i = 0; i < PICK_DAS_COUNT; i++) {
 						container.removeMessageListener(this, new ChannelTopic(topicKey + i));
 					}
 				}

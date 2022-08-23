@@ -160,14 +160,14 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 	}
 
 	@Override
-	public DasTodo nextDasTodo(final DasTodo originDasTodo) {
+	public DasTodo nextDasTodo(final long centerId, final int passage, final long roundId, final int basketId) {
 		return queryFactory.select(dasTodo)
 			.from(dasTodo)
 			.where(
-				dasTodo.centerId.eq(originDasTodo.getCenterId()),
-				dasTodo.passage.eq(originDasTodo.getPassage()),
-				dasTodo.roundId.eq(originDasTodo.getRoundId()),
-				dasTodo.basketNum.eq(originDasTodo.getBasketNum()),
+				dasTodo.centerId.eq(centerId),
+				dasTodo.passage.eq(passage),
+				dasTodo.roundId.eq(roundId),
+				dasTodo.basketNum.eq(basketId),
 				dasTodo.status.ne(BasketStatus.FINISH),
 				dasTodo.basketColor.isNotNull()
 			)
@@ -178,24 +178,25 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 	}
 
 	@Override
-	public void completeStatus(final DasTodo originDasTodo) {
+	public void completeStatus(final long dasTodoId) {
 		queryFactory.update(dasTodo)
 			.set(dasTodo.status, BasketStatus.FINISH)
 			.where(
-				dasTodo.dasTodoId.eq(originDasTodo.getDasTodoId())
+				dasTodo.dasTodoId.eq(dasTodoId)
 			)
 			.execute();
 	}
 
-	public void updateWeight(final DasTodo originDasTodo, final double basketWeight) {
+	public void updateWeight(final long centerId, final long roundId, final int passage,
+							 final int basketNum, final double basketWeight) {
 		queryFactory.update(dasTodo)
 			.set(dasTodo.basketWeight, basketWeight)
 			.where(
-				dasTodo.status.ne(BasketStatus.FINISH),
-				dasTodo.centerId.eq(originDasTodo.getCenterId()),
-				dasTodo.roundId.eq(originDasTodo.getRoundId()),
-				dasTodo.passage.eq(originDasTodo.getPassage()),
-				dasTodo.basketNum.eq(originDasTodo.getBasketNum())
+				dasTodo.centerId.eq(centerId),
+				dasTodo.roundId.eq(roundId),
+				dasTodo.passage.eq(passage),
+				dasTodo.basketNum.eq(basketNum),
+				dasTodo.status.ne(BasketStatus.FINISH)
 			)
 			.execute();
 	}
