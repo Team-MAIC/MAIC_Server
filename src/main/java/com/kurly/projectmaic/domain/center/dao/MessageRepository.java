@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MessageRepository extends JpaRepository<Message, Long> {
-	List<Message> findMessagesByWorkerId(final long workerId);
+	List<Message> findMessagesByWorkerIdAndIsVisibleOrderByCreatedAtDesc(final long workerId, final boolean isVisible);
 }

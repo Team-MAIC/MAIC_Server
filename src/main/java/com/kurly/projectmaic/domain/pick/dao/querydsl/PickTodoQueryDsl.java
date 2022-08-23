@@ -21,4 +21,6 @@ public interface PickTodoQueryDsl {
 		final List<OrderProductByRoundIdDto> orderProducts,
 		final List<ProductDto> productDtos,
 		final List<CenterProductDto> centerProductDtos);
+
+    Long getPickWorkerId(long roundId, long productId);
 }
