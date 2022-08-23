@@ -156,8 +156,8 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
 	}
 
 	@Override
-	public Long getPickWorkerId(long roundId, long productId) {
-		PickTodo result = queryFactory.select(pickTodo)
+	public PickTodo getPickTodo(long roundId, long productId) {
+		return queryFactory.select(pickTodo)
 			.from(pickTodo)
 			.where(
 				pickTodo.roundId.eq(roundId),
@@ -165,11 +165,5 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
 				pickTodo.status.eq(StatusType.FINISH)
 			)
 			.fetchFirst();
-
-		if (result == null) {
-			return null;
-		}
-
-		return result.getWorkerId();
 	}
 }

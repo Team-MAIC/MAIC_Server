@@ -5,7 +5,6 @@ public record MessageSendRequest(
 	long productId,
 	String productName,
 	long centerRoundNumber,
-	String position,
 	long amount
 ) {
 }

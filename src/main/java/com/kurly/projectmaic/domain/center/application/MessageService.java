@@ -9,6 +9,7 @@ import com.kurly.projectmaic.domain.center.dto.response.MessageResponse;
 import com.kurly.projectmaic.domain.center.dto.response.MessagesResponse;
 import com.kurly.projectmaic.domain.center.exception.WorkerNotFoundException;
 import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
+import com.kurly.projectmaic.domain.pick.domain.PickTodo;
 import com.kurly.projectmaic.global.common.response.ResponseCode;
 import com.kurly.projectmaic.global.external.fcm.request.FcmDataRequest;
 import com.kurly.projectmaic.global.external.fcm.request.FcmRequest;
@@ -55,25 +56,27 @@ public class MessageService {
 				new WorkerNotFoundException(ResponseCode.NOT_FOUND_WORKER,
 					String.format("workerId : %s", workerId)));
 
-		Long pickWorkerId = pickTodoRepository.getPickWorkerId(request.roundId(), request.productId());
+		PickTodo pickTodo = pickTodoRepository.getPickTodo(request.roundId(), request.productId());
 
-		if (pickWorkerId == null) {
+		if (pickTodo == null) {
 			throw new WorkerNotFoundException(ResponseCode.NOT_FOUND_PICK_WORKER,
-				String.format("workerId : %s", workerId));
+				String.format("workerId : %s", pickTodo.getWorkerId()));
 		}
 
-		Worker pickWorker = workerRepository.findById(pickWorkerId)
+		Worker pickWorker = workerRepository.findById(pickTodo.getWorkerId())
 			.orElseThrow(() ->
 				new WorkerNotFoundException(ResponseCode.NOT_FOUND_PICK_WORKER,
 					String.format("workerId : %s", workerId)));
 
-		String position = String.format("%s회차 %s", request.centerRoundNumber(), request.position());
+
+		String position = String.format("%s-%02d-%02d");
+		String fullPosition = String.format("%s회차 %s", request.centerRoundNumber(), position);
 		String content = String.format("%s번 통로 %s %s개 부족", worker.getPassage(), request.productName(), request.amount());
 
 		Message message = new Message(
 			pickWorker.getWorkerId(),
 			content,
-			position
+			fullPosition
 		);
 
 		FcmRequest messageSendRequest = new FcmRequest(
@@ -81,7 +84,7 @@ public class MessageService {
 			"high",
 			new FcmDataRequest(
 				content,
-				position
+				fullPosition
 			)
 		);
 

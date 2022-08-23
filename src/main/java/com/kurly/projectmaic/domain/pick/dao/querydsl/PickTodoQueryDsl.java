@@ -5,6 +5,7 @@ import java.util.List;
 import com.kurly.projectmaic.domain.center.dto.querydsl.CenterProductDto;
 import com.kurly.projectmaic.domain.model.CenterProductArea;
 import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductByRoundIdDto;
+import com.kurly.projectmaic.domain.pick.domain.PickTodo;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoCountDto;
 import com.kurly.projectmaic.domain.pick.dto.querydsl.PickTodoDto;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoFilterType;
@@ -22,5 +23,5 @@ public interface PickTodoQueryDsl {
 		final List<ProductDto> productDtos,
 		final List<CenterProductDto> centerProductDtos);
 
-    Long getPickWorkerId(long roundId, long productId);
+    PickTodo getPickTodo(long roundId, long productId);
 }

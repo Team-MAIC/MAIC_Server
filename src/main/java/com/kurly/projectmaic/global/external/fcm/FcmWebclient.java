@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class FcmWebclient {
 
-	@Value("${fcm.key}")
+	@Value("${fcmkey}")
 	private String authorizationKey;
 
 	@Bean

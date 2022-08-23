@@ -171,7 +171,7 @@ public class DasTodoService {
 
 			publisher.publish(
 				RedisChannelUtils.getDasBasketTopic(round.getCenterId(), round.getPassage(), i),
-				CustomResponseEntity.basketInit(basketColorResponse)
+				CustomResponseEntity.success(basketColorResponse)
 			);
 
 
