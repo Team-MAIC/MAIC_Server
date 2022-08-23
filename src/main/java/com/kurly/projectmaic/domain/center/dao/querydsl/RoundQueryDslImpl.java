@@ -99,6 +99,6 @@ public class RoundQueryDslImpl implements RoundQueryDsl {
 			.limit(1)
 			.fetchFirst();
 
-		return Optional.of(lastRound);
+		return Optional.ofNullable(lastRound);
 	}
 }
