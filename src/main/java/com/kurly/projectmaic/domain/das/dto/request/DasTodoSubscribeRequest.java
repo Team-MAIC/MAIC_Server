@@ -1,4 +1,4 @@
-package com.kurly.projectmaic.domain.das.dto.response;
+package com.kurly.projectmaic.domain.das.dto.request;
 
 public record DasTodoSubscribeRequest(
 	long centerId,

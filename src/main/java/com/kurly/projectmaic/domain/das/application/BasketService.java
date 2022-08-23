@@ -1,21 +1,19 @@
 package com.kurly.projectmaic.domain.das.application;
 
-import com.kurly.projectmaic.domain.das.dto.response.BasketInfoResponse;
-import com.kurly.projectmaic.domain.das.exception.DasTodoAlreadyException;
-import org.springframework.stereotype.Service;
-
 import com.kurly.projectmaic.domain.das.dao.DasTodoRepository;
 import com.kurly.projectmaic.domain.das.domain.DasTodo;
-import com.kurly.projectmaic.domain.das.dto.response.BasketColorResponse;
+import com.kurly.projectmaic.domain.das.dto.request.BasketInternalRequest;
+import com.kurly.projectmaic.domain.das.dto.response.BasketInfoResponse;
+import com.kurly.projectmaic.domain.das.dto.response.BasketInternalResponse;
 import com.kurly.projectmaic.domain.das.dto.response.DasTodoResponse;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
-import com.kurly.projectmaic.domain.das.exception.DasTodoFoundNotException;
+import com.kurly.projectmaic.domain.das.exception.DasTodoAlreadyException;
 import com.kurly.projectmaic.global.common.response.CustomResponseEntity;
 import com.kurly.projectmaic.global.common.response.ResponseCode;
 import com.kurly.projectmaic.global.common.utils.RedisChannelUtils;
 import com.kurly.projectmaic.global.queue.RedisPublisher;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -26,51 +24,113 @@ public class BasketService {
 	private final RedisPublisher publisher;
 
 	@Transactional
-	public BasketColorResponse completeDasTodo(long dasTodoId, final double basketWeight) {
-		if (dasTodoId == 0) {
+	public BasketInternalResponse refreshDasTodo(final BasketInternalRequest resquest) {
+		if (resquest == null) {
 			return null;
 		}
 
-		DasTodo dasTodo = dasTodoRepository.findById(dasTodoId)
-			.orElseThrow(() ->
-				new DasTodoFoundNotException(ResponseCode.NOT_FOUND_DAS_TODO, String.format("dasTodoId : {}", dasTodoId)));
+		double basketDifference = Math.abs((resquest.currentBasketWeight() - resquest.basketWeight()));
+		double totalWeight = resquest.productAmount() * resquest.productWeight();
+		int num = (int) Math.round(Math.abs(basketDifference) / resquest.productWeight());
+		BasketStatus status = resquest.status();
 
-		if (dasTodo.getStatus() == BasketStatus.FINISH) {
-			throw new DasTodoAlreadyException(ResponseCode.ALREADY_DAS_TODO, String.format("dasTodoId : {}", dasTodoId));
+		if (((totalWeight * 0.9) <= basketDifference && resquest.status() != BasketStatus.READY) &&
+			((totalWeight * 1.1) >= basketDifference && resquest.status() != BasketStatus.READY)) {
+			dasTodoRepository.updateStatus(resquest.dasTodoId(), BasketStatus.READY);
+
+			status = BasketStatus.READY;
 		}
 
-		double basketDifference = Math.abs((basketWeight - dasTodo.getBasketWeight()));
-		double totalWeight = dasTodo.getProductAmount() * dasTodo.getProductWeight();
+		if (((totalWeight * 0.9) > basketDifference && resquest.status() != BasketStatus.WRONG) &&
+			((totalWeight * 1.1) < basketDifference && resquest.status() != BasketStatus.WRONG)) {
+			dasTodoRepository.updateStatus(resquest.dasTodoId(), BasketStatus.WRONG);
 
-		if (((totalWeight * 0.9) > basketDifference && dasTodo.getStatus() != BasketStatus.WRONG) ||
-			((totalWeight * 1.1) < basketDifference && dasTodo.getStatus() != BasketStatus.WRONG)) {
+			status = BasketStatus.WRONG;
+		}
 
-			int num = (int) Math.round(Math.abs(basketDifference) / dasTodo.getProductWeight());
+		publisher.publish(
+			RedisChannelUtils.getDasTodoTopic(resquest.centerId(), resquest.passage()),
+			CustomResponseEntity.success(
+				new BasketInfoResponse(
+					resquest.basketNum(),
+					new DasTodoResponse(
+						resquest.roundId(),
+						resquest.productId(),
+						resquest.productName(),
+						resquest.productAmount(),
+						num,
+						resquest.color(),
+						status
+					)
+				)
+			));
 
-			dasTodoRepository.updateStatus(dasTodoId, BasketStatus.WRONG);
+		return new BasketInternalResponse(
+			resquest.dasTodoId(),
+			resquest.centerId(),
+			resquest.passage(),
+			resquest.roundId(),
+			resquest.productId(),
+			resquest.productName(),
+			resquest.basketWeight(),
+			resquest.productAmount(),
+			resquest.productWeight(),
+			status,
+			resquest.color()
+		);
+	}
 
-			pubDasTodoMessage(dasTodo, num);
+	@Transactional
+	public BasketInternalResponse completeDasTodo(final BasketInternalRequest resquest) {
+		if (resquest == null) {
+			return null;
+		}
 
-			return new BasketColorResponse(
-				dasTodoId,
+		if (resquest.status() == BasketStatus.FINISH) {
+			throw new DasTodoAlreadyException(ResponseCode.ALREADY_DAS_TODO, String.format("dasTodoId : {}", resquest.dasTodoId()));
+		}
+
+		double basketDifference = Math.abs((resquest.currentBasketWeight() - resquest.basketWeight()));
+		double totalWeight = resquest.productAmount() * resquest.productWeight();
+
+		if (((totalWeight * 0.9) > basketDifference && resquest.status() != BasketStatus.WRONG) ||
+			((totalWeight * 1.1) < basketDifference && resquest.status() != BasketStatus.WRONG)) {
+
+			int num = (int) Math.round(Math.abs(basketDifference) / resquest.productWeight());
+
+			dasTodoRepository.updateStatus(resquest.dasTodoId(), BasketStatus.WRONG);
+
+			pubDasTodoMessage(resquest, num);
+
+			return new BasketInternalResponse(
+				resquest.dasTodoId(),
+				resquest.centerId(),
+				resquest.passage(),
+				resquest.roundId(),
+				resquest.productId(),
+				resquest.productName(),
+				resquest.basketWeight(),
+				resquest.productAmount(),
+				resquest.productWeight(),
 				BasketStatus.WRONG,
-				dasTodo.getBasketColor(),
-				num
+				resquest.color()
 			);
 		}
 
-		dasTodoRepository.updateStatus(dasTodoId, BasketStatus.FINISH);
-		dasTodoRepository.completeStatus(dasTodo);
-		dasTodoRepository.updateWeight(dasTodo, basketWeight);
+		dasTodoRepository.updateStatus(resquest.dasTodoId(), BasketStatus.FINISH);
+		dasTodoRepository.completeStatus(resquest.dasTodoId());
+		dasTodoRepository.updateWeight(resquest.centerId(), resquest.roundId(), resquest.passage(),
+			resquest.basketNum(), resquest.currentBasketWeight());
 
-		DasTodo nextDasTodo = dasTodoRepository.nextDasTodo(dasTodo);
+		DasTodo nextDasTodo = dasTodoRepository.nextDasTodo(resquest.centerId(), resquest.passage(),
+			resquest.roundId(), resquest.basketNum());
 
 		if (nextDasTodo == null) {
 			publisher.publish(
-				RedisChannelUtils.getDasTodoTopic(dasTodo.getCenterId(), dasTodo.getPassage()),
+				RedisChannelUtils.getDasTodoTopic(resquest.centerId(), resquest.passage()),
 				CustomResponseEntity.success(
 					new BasketInfoResponse(
-						dasTodo.getBasketNum(),
+						resquest.basketNum(),
 						null
 					)
 				));
@@ -95,27 +155,33 @@ public class BasketService {
 				)
 			));
 
-		return new BasketColorResponse(
+		return new BasketInternalResponse(
 			nextDasTodo.getDasTodoId(),
+			nextDasTodo.getCenterId(),
+			nextDasTodo.getPassage(),
+			nextDasTodo.getRoundId(),
+			nextDasTodo.getProductId(),
+			nextDasTodo.getProductName(),
+			nextDasTodo.getBasketWeight(),
+			nextDasTodo.getProductAmount(),
+			nextDasTodo.getProductWeight(),
 			nextDasTodo.getStatus(),
-			nextDasTodo.getBasketColor(),
-			nextDasTodo.getProductAmount()
-		);
+			nextDasTodo.getBasketColor());
 	}
 
-	private void pubDasTodoMessage(DasTodo dasTodo, int num) {
+	private void pubDasTodoMessage(final BasketInternalRequest resquest, final int num) {
 		publisher.publish(
-			RedisChannelUtils.getDasTodoTopic(dasTodo.getCenterId(), dasTodo.getPassage()),
+			RedisChannelUtils.getDasTodoTopic(resquest.centerId(), resquest.passage()),
 			CustomResponseEntity.success(
 				new BasketInfoResponse(
-					dasTodo.getBasketNum(),
+					resquest.basketNum(),
 					new DasTodoResponse(
-						dasTodo.getRoundId(),
-						dasTodo.getProductId(),
-						dasTodo.getProductName(),
-						dasTodo.getProductAmount(),
+						resquest.roundId(),
+						resquest.productId(),
+						resquest.productName(),
+						resquest.productAmount(),
 						num,
-						dasTodo.getBasketColor(),
+						resquest.color(),
 						BasketStatus.WRONG
 					)
 				)

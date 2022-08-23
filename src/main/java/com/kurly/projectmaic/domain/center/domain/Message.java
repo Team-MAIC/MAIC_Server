@@ -1,6 +1,5 @@
 package com.kurly.projectmaic.domain.center.domain;
 
-import com.kurly.projectmaic.domain.center.enumeration.RoundStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

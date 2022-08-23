@@ -21,8 +21,9 @@ public interface DasTodoQueryDsl {
 	List<ProductsColorDto> getUsedColor(final long roundId);
 	void updateColor(final long roundId, final long productId, final BasketColor color);
 	void updateStatus(final long dasTodoId, BasketStatus status);
-	DasTodo nextDasTodo(final DasTodo originDasTodo);
+	DasTodo nextDasTodo(final long centerId, final int passage, final long roundId, final int basketId);
 
-	void completeStatus(final DasTodo dasTodo);
-	void updateWeight(final DasTodo originDasTodo, final double basketWeight);
+	void completeStatus(final long dasTodoId);
+	void updateWeight(final long centerId, final long roundId, final int passage,
+					  final int basketNum, final double basketWeight);
 }

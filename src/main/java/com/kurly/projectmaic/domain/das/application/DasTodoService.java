@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.kurly.projectmaic.domain.das.dto.querydsl.ProductsColorDto;
+import com.kurly.projectmaic.domain.das.dto.response.*;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +24,6 @@ import com.kurly.projectmaic.domain.das.dao.DasBasketReopository;
 import com.kurly.projectmaic.domain.das.dao.DasTodoRepository;
 import com.kurly.projectmaic.domain.das.domain.DasBasket;
 import com.kurly.projectmaic.domain.das.domain.DasTodo;
-import com.kurly.projectmaic.domain.das.dto.response.BasketColorResponse;
-import com.kurly.projectmaic.domain.das.dto.response.BasketResponse;
-import com.kurly.projectmaic.domain.das.dto.response.BasketsInfoResponse;
-import com.kurly.projectmaic.domain.das.dto.response.DasTodoResponse;
-import com.kurly.projectmaic.domain.das.dto.response.DasTodoSummaryResponse;
-import com.kurly.projectmaic.domain.das.dto.response.BasketInfoResponse;
-import com.kurly.projectmaic.domain.das.dto.response.ProductsColorResponse;
 import com.kurly.projectmaic.domain.das.enumeration.BasketColor;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 import com.kurly.projectmaic.domain.das.exception.EveryBasketColorsUsedException;
@@ -146,7 +140,7 @@ public class DasTodoService {
 		for (int i = 0; i < PICK_DAS_COUNT; i++) {
 			DasTodo todo = map.get(i);
 			DasTodoResponse dasTodoResponse = null;
-			BasketColorResponse basketColorResponse = null;
+			BasketInternalResponse basketColorResponse = null;
 
 			if (todo != null) {
 				dasTodoResponse = new DasTodoResponse(
@@ -159,11 +153,18 @@ public class DasTodoService {
 					todo.getStatus()
 				);
 
-				basketColorResponse = new BasketColorResponse(
+				basketColorResponse = new BasketInternalResponse(
 					todo.getDasTodoId(),
+					todo.getCenterId(),
+					round.getPassage(),
+					todo.getRoundId(),
+					todo.getProductId(),
+					todo.getProductName(),
+					todo.getBasketWeight(),
+					todo.getProductAmount(),
+					todo.getProductWeight(),
 					todo.getStatus(),
-					todo.getBasketColor(),
-					todo.getProductAmount()
+					todo.getBasketColor()
 				);
 			}
 
@@ -225,14 +226,21 @@ public class DasTodoService {
 
 		for (int i = 0; i < PICK_DAS_COUNT; i++) {
 			DasTodo todo = map.get(i);
-			BasketColorResponse basketColorResponse = null;
+			BasketInternalResponse basketColorResponse = null;
 
 			if (todo != null) {
-				basketColorResponse = new BasketColorResponse(
+				basketColorResponse = new BasketInternalResponse(
 					todo.getDasTodoId(),
+					todo.getCenterId(),
+					round.getPassage(),
+					todo.getRoundId(),
+					todo.getProductId(),
+					todo.getProductName(),
+					todo.getBasketWeight(),
+					todo.getProductAmount(),
+					todo.getProductWeight(),
 					todo.getStatus(),
-					todo.getBasketColor(),
-					todo.getProductAmount()
+					todo.getBasketColor()
 				);
 			}
 
