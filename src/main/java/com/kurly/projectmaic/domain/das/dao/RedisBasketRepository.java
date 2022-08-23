@@ -1,6 +1,8 @@
 package com.kurly.projectmaic.domain.das.dao;
 
 import com.kurly.projectmaic.domain.das.dto.request.BasketMappingRequest;
+import com.kurly.projectmaic.domain.das.exception.IndexMappingException;
+import com.kurly.projectmaic.global.common.response.ResponseCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
@@ -27,6 +29,10 @@ public class RedisBasketRepository {
 
 	public Long getKey(long centerId, int passage, int basketNum) {
 		String key = (String) redisTemplate.opsForValue().get(String.format("%s:%s:%s", centerId, passage, basketNum));
+
+		if (key == null) {
+			throw new IndexMappingException(ResponseCode.FAIL, String.format("%s:%s:%s", centerId, passage, basketNum));
+		}
 
 		return Long.valueOf(key);
 	}

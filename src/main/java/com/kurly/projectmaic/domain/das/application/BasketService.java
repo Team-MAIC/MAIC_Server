@@ -45,7 +45,7 @@ public class BasketService {
 			status = BasketStatus.READY;
 		}
 
-		if (((totalWeight * 0.9) > basketDifference && resquest.status() != BasketStatus.WRONG) &&
+		if (((totalWeight * 0.9) > basketDifference && resquest.status() != BasketStatus.WRONG) ||
 			((totalWeight * 1.1) < basketDifference && resquest.status() != BasketStatus.WRONG)) {
 			dasTodoRepository.updateStatus(resquest.dasTodoId(), BasketStatus.WRONG);
 
