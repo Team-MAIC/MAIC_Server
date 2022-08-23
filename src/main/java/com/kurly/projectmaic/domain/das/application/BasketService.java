@@ -1,8 +1,10 @@
 package com.kurly.projectmaic.domain.das.application;
 
 import com.kurly.projectmaic.domain.das.dao.DasTodoRepository;
+import com.kurly.projectmaic.domain.das.dao.RedisBasketRepository;
 import com.kurly.projectmaic.domain.das.domain.DasTodo;
 import com.kurly.projectmaic.domain.das.dto.request.BasketInternalRequest;
+import com.kurly.projectmaic.domain.das.dto.request.BasketsMappingRequest;
 import com.kurly.projectmaic.domain.das.dto.response.BasketInfoResponse;
 import com.kurly.projectmaic.domain.das.dto.response.BasketInternalResponse;
 import com.kurly.projectmaic.domain.das.dto.response.DasTodoResponse;
@@ -22,6 +24,7 @@ public class BasketService {
 
 	private final DasTodoRepository dasTodoRepository;
 	private final RedisPublisher publisher;
+	private final RedisBasketRepository redisBasketRepository;
 
 	@Transactional
 	public BasketInternalResponse refreshDasTodo(final BasketInternalRequest resquest) {
@@ -186,5 +189,10 @@ public class BasketService {
 					)
 				)
 			));
+	}
+
+	public void mapping(final long centerId, final int passage, final BasketsMappingRequest baskets) {
+		redisBasketRepository.deleteKeys(centerId, passage);
+		redisBasketRepository.setKeys(centerId, passage, baskets.baskets());
 	}
 }
