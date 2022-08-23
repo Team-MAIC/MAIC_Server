@@ -12,6 +12,7 @@ public enum ResponseCode implements EnumType {
 
     // center response code
     NOT_FOUND_WORKER(1001, "작업자 정보를 조회하지 못했습니다."),
+	NOT_FOUND_PICK_WORKER(1002, "피킹 작업자 정보를 조회하지 못했습니다."),
 
 	// pick response code
 	NOT_FOUND_PICK_TODO(2001, "항목을 조회하지 못했습니다."),

@@ -24,7 +24,6 @@ import java.util.stream.Stream;
 public class WorkerService {
 
     private final WorkerRepository workerRepository;
-    private final MessageRepository messageRepository;
 
     @Transactional()
     public WorkerInfoResponse getWorkerInfo(final long workerId) {
@@ -59,21 +58,4 @@ public class WorkerService {
         worker.updateDeviceToken(deviceToken);
         workerRepository.save(worker);
     }
-
-    public MessagesResponse getMessages(final long workerId) {
-		List<Message> messages = messageRepository.findMessagesByWorkerId(workerId);
-		List<MessageResponse> m = messages.stream()
-			.map(message -> getMessageResponse(message))
-			.toList();
-
-		return new MessagesResponse(m);
-	}
-
-	private MessageResponse getMessageResponse(Message message) {
-    	return new MessageResponse(
-			message.getMessageId(),
-			message.getContent(),
-			message.getFullLocation()
-		);
-	}
 }

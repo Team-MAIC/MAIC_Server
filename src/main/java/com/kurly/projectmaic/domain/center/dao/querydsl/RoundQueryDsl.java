@@ -1,6 +1,7 @@
 package com.kurly.projectmaic.domain.center.dao.querydsl;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.kurly.projectmaic.domain.center.domain.Round;
 import com.kurly.projectmaic.domain.center.dto.querydsl.CurrentRoundDto;
@@ -13,4 +14,6 @@ public interface RoundQueryDsl {
 	List<RoundDto> findToDoRoundsByCenterId(final long centerId);
 	void updateRoundStatus(final long roundId, final RoundStatus status);
 	Round getUnassignedRound();
+
+	Optional<Round> getLastRoundByPassage(final long centerId, final int passage);
 }

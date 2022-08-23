@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.kurly.projectmaic.domain.center.dto.querydsl.CenterProductDto;
 import com.kurly.projectmaic.domain.order.dto.querydsl.OrderProductByRoundIdDto;
+import com.kurly.projectmaic.domain.pick.domain.PickTodo;
 import com.kurly.projectmaic.domain.pick.exception.PickTodoFilterType;
 import com.kurly.projectmaic.domain.product.dto.querydsl.ProductDto;
 import com.kurly.projectmaic.global.common.expression.OrderByNull;
@@ -152,5 +153,23 @@ public class PickTodoQueryDslImpl implements PickTodoQueryDsl {
 		}
 
 		return null;
+	}
+
+	@Override
+	public Long getPickWorkerId(long roundId, long productId) {
+		PickTodo result = queryFactory.select(pickTodo)
+			.from(pickTodo)
+			.where(
+				pickTodo.roundId.eq(roundId),
+				pickTodo.productId.eq(productId),
+				pickTodo.status.eq(StatusType.FINISH)
+			)
+			.fetchFirst();
+
+		if (result == null) {
+			return null;
+		}
+
+		return result.getWorkerId();
 	}
 }

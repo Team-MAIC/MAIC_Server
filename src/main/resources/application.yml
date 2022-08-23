@@ -6,9 +6,6 @@ spring:
     hikari:
       data-source-properties:
         rewriteBatchedStatements: true
-  #  sql:
-  #    init:
-  #      mode: always
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,7 +15,9 @@ spring:
       logging.level:
         org.hibernate.SQL: debug
     show-sql: true
-  #    defer-datasource-initialization: true
   redis:
     host: localhost
     port: 6379
+
+fcm:
+  key: ${fcmkey}
