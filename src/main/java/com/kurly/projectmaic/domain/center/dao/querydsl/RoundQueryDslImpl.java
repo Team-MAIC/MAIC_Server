@@ -76,10 +76,11 @@ public class RoundQueryDslImpl implements RoundQueryDsl {
 	}
 
 	@Override
-	public Round getUnassignedRound() {
+	public Round getUnassignedRound(final long centerId) {
 		return queryFactory.select(round)
 			.from(round)
 			.where(
+				round.centerId.eq(centerId),
 				round.status.eq(RoundStatus.PICK),
 				round.passage.isNull()
 			)

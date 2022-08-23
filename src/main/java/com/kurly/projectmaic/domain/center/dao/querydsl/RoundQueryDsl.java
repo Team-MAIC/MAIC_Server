@@ -13,7 +13,6 @@ public interface RoundQueryDsl {
 	Long createNewRound(final long centerId, final long centerRoundNumber);
 	List<RoundDto> findToDoRoundsByCenterId(final long centerId);
 	void updateRoundStatus(final long roundId, final RoundStatus status);
-	Round getUnassignedRound();
-
+	Round getUnassignedRound(final long centerId);
 	Optional<Round> getLastRoundByPassage(final long centerId, final int passage);
 }

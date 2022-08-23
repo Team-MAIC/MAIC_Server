@@ -60,11 +60,11 @@ public class DasTodoService {
 
 		List<Long> orderIds = getOrderIds(round.getRoundId());
 
-		List<DasBasket> dasBaskets = dasBasketReopository.findAllById(orderIds);
+		List<DasBasket> dasBaskets = dasBasketReopository.findAllByOrderInfoId(orderIds);
 
 		if (dasBaskets.size() == 0) {
 			dasBasketReopository.bulkSave(orderIds);
-			dasBaskets = dasBasketReopository.findAllById(orderIds);
+			dasBaskets = dasBasketReopository.findAllByOrderInfoId(orderIds);
 		}
 
 		Map<Long, Integer> baskets = dasBaskets.stream()
@@ -101,7 +101,7 @@ public class DasTodoService {
 			return round;
 		}
 
-		round = roundRepository.getUnassignedRound();
+		round = roundRepository.getUnassignedRound(centerId);
 
 		if (round == null) {
 			throw new DasNotFoundException(ResponseCode.NOT_FOUND_DAS, "");

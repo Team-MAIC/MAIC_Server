@@ -2,6 +2,7 @@ package com.kurly.projectmaic.global.error.handler;
 
 import com.kurly.projectmaic.domain.das.exception.DasTodoAlreadyException;
 import com.kurly.projectmaic.domain.das.exception.DasTodoFoundNotException;
+import com.kurly.projectmaic.domain.das.exception.EveryBasketColorsUsedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -66,6 +67,12 @@ public class GlobalHandlerController {
 	@ExceptionHandler(PurchaseException.class)
 	public CustomResponseEntity<Void> handlePurchaseException(PurchaseException e) {
 		log.error("purchaseException: {}", e.getCode());
+		return CustomResponseEntity.fail(e.getCode());
+	}
+
+	@ExceptionHandler(EveryBasketColorsUsedException.class)
+	public CustomResponseEntity<Void> handleEveryBasketColorsUsedException(EveryBasketColorsUsedException e) {
+		log.error("everyBasketColorsUsedException: {}", e.getCode());
 		return CustomResponseEntity.fail(e.getCode());
 	}
 }

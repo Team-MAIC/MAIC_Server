@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.kurly.projectmaic.domain.das.domain.DasBasket;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,10 +14,13 @@ import com.kurly.projectmaic.domain.order.domain.OrderProduct;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.kurly.projectmaic.domain.das.domain.QDasBasket.dasBasket;
+
 @Repository
 @RequiredArgsConstructor
 public class DasBasketQueryDslImpl implements DasBasketQueryDsl {
 
+	private final JPAQueryFactory queryFactory;
 	private final JdbcTemplate jdbcTemplate;
 
 	@Override
@@ -36,5 +41,15 @@ public class DasBasketQueryDslImpl implements DasBasketQueryDsl {
 					return orderIds.size();
 				}
 			});
+	}
+
+	@Override
+	public List<DasBasket> findAllByOrderInfoId(List<Long> orderInfoId) {
+		return queryFactory.select(dasBasket)
+			.from(dasBasket)
+			.where(
+				dasBasket.orderInfoId.in(orderInfoId)
+			)
+			.fetch();
 	}
 }
