@@ -45,7 +45,8 @@ public class MessageService {
 		return new MessageResponse(
 			message.getMessageId(),
 			message.getContent(),
-			message.getFullLocation()
+			message.getFullLocation(),
+			message.getCreatedAt()
 		);
 	}
 
@@ -69,7 +70,7 @@ public class MessageService {
 					String.format("workerId : %s", workerId)));
 
 
-		String position = String.format("%s-%02d-%02d");
+		String position = String.format("%s-%02d-%02d", pickTodo.getArea(), pickTodo.getLine(), pickTodo.getLocation());
 		String fullPosition = String.format("%s회차 %s", request.centerRoundNumber(), position);
 		String content = String.format("%s번 통로 %s %s개 부족", worker.getPassage(), request.productName(), request.amount());
 
