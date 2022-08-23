@@ -5,8 +5,13 @@ import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 
 public record BasketColorResponse(
 	long dasTodoId,
+	long centerId,
+	long roundId,
+	long productId,
+	String productName,
+	double basketWeight,
+	int productAmount,
 	BasketStatus status,
-	BasketColor color,
-	long amount
+	BasketColor color
 ) {
 }
