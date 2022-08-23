@@ -24,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class RedisSubscriber implements MessageListener {
 
+	private static final String TOPIC_KEY = "QUEUE_TOPIC";
+
 	private final ObjectMapper objectMapper;
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final SimpMessageSendingOperations messageSender;
@@ -33,6 +35,10 @@ public class RedisSubscriber implements MessageListener {
 	private void init() {
 		container.addMessageListener(this, new ChannelTopic(RedisTopic.SUB));
 		container.addMessageListener(this, new ChannelTopic(RedisTopic.UNSUB));
+
+		redisTemplate.opsForSet().members(TOPIC_KEY).stream().forEach(key -> {
+			container.addMessageListener(this, new ChannelTopic(key.toString()));
+		});
 	}
 
 	@Override
@@ -48,12 +54,15 @@ public class RedisSubscriber implements MessageListener {
 			CustomResponseEntity<?> response = objectMapper.readValue(body, CustomResponseEntity.class);
 
 			if (RedisTopic.SUB.equals(key)) {
+				redisTemplate.opsForSet().add(TOPIC_KEY, response.getData());
 				container.addMessageListener(this, new ChannelTopic((String) response.getData()));
 				return;
 			}
 
 			if (RedisTopic.UNSUB.equals(key)) {
 				String topicKey = (String) response.getData();
+
+				redisTemplate.opsForSet().remove(TOPIC_KEY, response.getData());
 
 				container.removeMessageListener(this, new ChannelTopic(topicKey));
 

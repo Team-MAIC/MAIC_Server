@@ -486,14 +486,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">성공</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">연결</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-1</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">실패</p></td>
 </tr>
@@ -514,12 +506,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <td class="tableblock halign-left valign-top"><p class="tableblock">모든 색상을 이용중입니다.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1001</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">작업자 정보를 조회하지 못했습니다.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2002</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미 완료 된 항목입니다.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4003</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DAS 항목을 조회하지 못했습니다.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>2001</code></p></td>
@@ -532,6 +520,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>3001</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">상품 정보를 조회하지 못했습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">연결</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">초기화 요청</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1001</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">작업자 정보를 조회하지 못했습니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2002</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미 완료 된 항목입니다.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>4004</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미 완료 된 DAS 항목 입니다.</p></td>
 </tr>
 </tbody>
 </table>
@@ -579,7 +591,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 199
+Content-Length: 210
 
 {
   "code" : 1,
@@ -699,7 +711,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 204
+Content-Length: 212
 
 {
   "code" : 1,
@@ -763,7 +775,7 @@ Content-Length: 204
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2022-08-21 02:01:16 +0900
+Last updated 2022-08-22 18:16:13 +0900
 </div>
 </div>
 </body>

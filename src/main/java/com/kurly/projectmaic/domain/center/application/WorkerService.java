@@ -1,5 +1,9 @@
 package com.kurly.projectmaic.domain.center.application;
 
+import com.kurly.projectmaic.domain.center.dao.MessageRepository;
+import com.kurly.projectmaic.domain.center.domain.Message;
+import com.kurly.projectmaic.domain.center.dto.response.MessageResponse;
+import com.kurly.projectmaic.domain.center.dto.response.MessagesResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,11 +16,15 @@ import com.kurly.projectmaic.global.common.response.ResponseCode;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 @Service
 @RequiredArgsConstructor
 public class WorkerService {
 
     private final WorkerRepository workerRepository;
+    private final MessageRepository messageRepository;
 
     @Transactional()
     public WorkerInfoResponse getWorkerInfo(final long workerId) {
@@ -51,4 +59,21 @@ public class WorkerService {
         worker.updateDeviceToken(deviceToken);
         workerRepository.save(worker);
     }
+
+    public MessagesResponse getMessages(final long workerId) {
+		List<Message> messages = messageRepository.findMessagesByWorkerId(workerId);
+		List<MessageResponse> m = messages.stream()
+			.map(message -> getMessageResponse(message))
+			.toList();
+
+		return new MessagesResponse(m);
+	}
+
+	private MessageResponse getMessageResponse(Message message) {
+    	return new MessageResponse(
+			message.getMessageId(),
+			message.getContent(),
+			message.getFullLocation()
+		);
+	}
 }

@@ -1,5 +1,6 @@
 package com.kurly.projectmaic.domain.das.application;
 
+import static com.kurly.projectmaic.global.common.constant.PIckDasCount.PICK_DAS_COUNT;
 import static com.kurly.projectmaic.global.common.response.ResponseCode.*;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.kurly.projectmaic.domain.das.dto.querydsl.ProductsColorDto;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,7 +143,7 @@ public class DasTodoService {
 
 		List<BasketInfoResponse> basketInfoResponses = new ArrayList<>(todos.size());
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < PICK_DAS_COUNT; i++) {
 			DasTodo todo = map.get(i);
 			DasTodoResponse dasTodoResponse = null;
 			BasketColorResponse basketColorResponse = null;
@@ -179,17 +181,25 @@ public class DasTodoService {
 			);
 		}
 
-		List<ProductsColorResponse> colors = dasTodoRepository.getUsedColor(roundId);
+		List<ProductsColorDto> colors = dasTodoRepository.getUsedColor(roundId);
 
-		return new BasketsInfoResponse(colors, basketInfoResponses);
+		List<ProductsColorResponse> productsColorResponses = colors.stream()
+			.map(c -> new ProductsColorResponse(c.color(), c.productName()))
+			.toList();
+
+		return new BasketsInfoResponse(productsColorResponses, basketInfoResponses);
 	}
 
 	@Transactional
 	public void updateColor(long roundId, long productId) {
-		List<ProductsColorResponse> colors = dasTodoRepository.getUsedColor(roundId);
+		Round round = roundRepository.findById(roundId)
+			.orElseThrow(() ->
+				new RoundNotFoundException(NOT_FOUND_ROUND, String.format("roundId : {}", roundId)));
+
+		List<ProductsColorDto> colors = dasTodoRepository.getUsedColor(roundId);
 
 		List<BasketColor> basketColors = colors.stream()
-			.map(ProductsColorResponse::color)
+			.map(ProductsColorDto::color)
 			.toList();
 
 		if (colors.size() == 4) {
@@ -203,6 +213,35 @@ public class DasTodoService {
 			.findFirst()
 			.orElseThrow(() -> new EveryBasketColorsUsedException(USED_EVERY_COLORS, ""));
 
+		var todos = dasTodoRepository.getDasTodos(roundId, BasketStatus.ALL, BasketColor.ALL);
+
+		Map<Integer, DasTodo> map = new HashMap<>();
+
+		todos.forEach(t -> {
+			if (!map.containsKey(t.getBasketNum())) {
+				map.put(t.getBasketNum(), t);
+			}
+		});
+
+		for (int i = 0; i < PICK_DAS_COUNT; i++) {
+			DasTodo todo = map.get(i);
+			BasketColorResponse basketColorResponse = null;
+
+			if (todo != null) {
+				basketColorResponse = new BasketColorResponse(
+					todo.getDasTodoId(),
+					todo.getStatus(),
+					todo.getBasketColor(),
+					todo.getProductAmount()
+				);
+			}
+
+			publisher.publish(
+				RedisChannelUtils.getDasBasketTopic(round.getCenterId(), round.getPassage(), i),
+				CustomResponseEntity.basketInit(basketColorResponse)
+			);
+		}
+
 		dasTodoRepository.updateColor(roundId, productId, color);
 	}
 
@@ -214,7 +253,7 @@ public class DasTodoService {
 				RedisChannelUtils.getDasTodoTopicName(centerId, passage))
 		);
 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < PICK_DAS_COUNT; i++) {
 			publisher.publish(
 				new ChannelTopic(RedisTopic.SUB),
 				CustomResponseEntity.connect(
