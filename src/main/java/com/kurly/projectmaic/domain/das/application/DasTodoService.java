@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.kurly.projectmaic.domain.das.dao.RedisBasketRepository;
 import com.kurly.projectmaic.domain.das.dto.querydsl.ProductsColorDto;
 import com.kurly.projectmaic.domain.das.dto.response.*;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -53,6 +54,7 @@ public class DasTodoService {
 	private final RoundRepository roundRepository;
 	private final ProductRepository productRepository;
 	private final RedisPublisher publisher;
+	private final RedisBasketRepository redisBasketRepository;
 
 	@Transactional
 	public DasTodoSummaryResponse refreshDasTodos(final long centerID, final int passage) {
@@ -174,10 +176,14 @@ public class DasTodoService {
 				CustomResponseEntity.success(basketColorResponse)
 			);
 
+			BasketMappingResponse basketMappingResponse = new BasketMappingResponse(
+				redisBasketRepository.getKey(round.getCenterId(), round.getPassage(), i),
+				i
+			);
 
 			basketInfoResponses.add(
 				new BasketInfoResponse(
-					i,
+					basketMappingResponse,
 					dasTodoResponse
 				)
 			);

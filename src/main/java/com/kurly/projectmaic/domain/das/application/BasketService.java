@@ -7,6 +7,7 @@ import com.kurly.projectmaic.domain.das.dto.request.BasketInternalRequest;
 import com.kurly.projectmaic.domain.das.dto.request.BasketsMappingRequest;
 import com.kurly.projectmaic.domain.das.dto.response.BasketInfoResponse;
 import com.kurly.projectmaic.domain.das.dto.response.BasketInternalResponse;
+import com.kurly.projectmaic.domain.das.dto.response.BasketMappingResponse;
 import com.kurly.projectmaic.domain.das.dto.response.DasTodoResponse;
 import com.kurly.projectmaic.domain.das.enumeration.BasketStatus;
 import com.kurly.projectmaic.domain.das.exception.DasTodoAlreadyException;
@@ -51,11 +52,16 @@ public class BasketService {
 			status = BasketStatus.WRONG;
 		}
 
+		BasketMappingResponse basketMappingResponse = new BasketMappingResponse(
+			redisBasketRepository.getKey(resquest.centerId(),resquest.passage(), resquest.basketNum()),
+			resquest.basketNum()
+		);
+
 		publisher.publish(
 			RedisChannelUtils.getDasTodoTopic(resquest.centerId(), resquest.passage()),
 			CustomResponseEntity.success(
 				new BasketInfoResponse(
-					resquest.basketNum(),
+					basketMappingResponse,
 					new DasTodoResponse(
 						resquest.roundId(),
 						resquest.productId(),
@@ -129,11 +135,16 @@ public class BasketService {
 			resquest.roundId(), resquest.basketNum());
 
 		if (nextDasTodo == null) {
+			BasketMappingResponse basketMappingResponse = new BasketMappingResponse(
+				redisBasketRepository.getKey(resquest.centerId(),resquest.passage(), resquest.basketNum()),
+				resquest.basketNum()
+			);
+
 			publisher.publish(
 				RedisChannelUtils.getDasTodoTopic(resquest.centerId(), resquest.passage()),
 				CustomResponseEntity.success(
 					new BasketInfoResponse(
-						resquest.basketNum(),
+						basketMappingResponse,
 						null
 					)
 				));
@@ -141,11 +152,16 @@ public class BasketService {
 			return null;
 		}
 
+		BasketMappingResponse basketMappingResponse = new BasketMappingResponse(
+			redisBasketRepository.getKey(nextDasTodo.getCenterId(), nextDasTodo.getPassage(), nextDasTodo.getBasketNum()),
+			resquest.basketNum()
+		);
+
 		publisher.publish(
 			RedisChannelUtils.getDasTodoTopic(nextDasTodo.getCenterId(), nextDasTodo.getPassage()),
 			CustomResponseEntity.success(
 				new BasketInfoResponse(
-					nextDasTodo.getBasketNum(),
+					basketMappingResponse,
 					new DasTodoResponse(
 						nextDasTodo.getRoundId(),
 						nextDasTodo.getProductId(),
@@ -173,11 +189,16 @@ public class BasketService {
 	}
 
 	private void pubDasTodoMessage(final BasketInternalRequest resquest, final int num) {
+		BasketMappingResponse basketMappingResponse = new BasketMappingResponse(
+			redisBasketRepository.getKey(resquest.centerId(), resquest.passage(), resquest.basketNum()),
+			resquest.basketNum()
+		);
+
 		publisher.publish(
 			RedisChannelUtils.getDasTodoTopic(resquest.centerId(), resquest.passage()),
 			CustomResponseEntity.success(
 				new BasketInfoResponse(
-					resquest.basketNum(),
+					basketMappingResponse,
 					new DasTodoResponse(
 						resquest.roundId(),
 						resquest.productId(),

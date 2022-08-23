@@ -21,7 +21,13 @@ public class RedisBasketRepository {
 
 	public void setKeys(long centerId, int passage, List<BasketMappingRequest> baskets) {
 		baskets.forEach(basket -> {
-			redisTemplate.opsForValue().set(String.format("%s:%s:%s", centerId, passage, basket.bascketNum()), basket.clientIdx());
+			redisTemplate.opsForValue().set(String.format("%s:%s:%s", centerId, passage, basket.basketNum()), String.valueOf(basket.clientIdx()));
 		});
+	}
+
+	public Long getKey(long centerId, int passage, int basketNum) {
+		String key = (String) redisTemplate.opsForValue().get(String.format("%s:%s:%s", centerId, passage, basketNum));
+
+		return Long.valueOf(key);
 	}
 }
