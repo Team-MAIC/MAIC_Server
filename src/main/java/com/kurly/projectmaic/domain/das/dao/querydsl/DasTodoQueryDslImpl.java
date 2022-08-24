@@ -109,7 +109,7 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 			.from(dasTodo)
 			.where(
 				dasTodo.roundId.eq(roundId),
-				dasTodo.status.eq(BasketStatus.READY),
+				dasTodo.status.ne(BasketStatus.FINISH),
 				dasTodo.basketColor.isNotNull(),
 				eqColor(BasketColor.ALL)
 			)
