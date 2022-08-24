@@ -50,7 +50,6 @@ public class Round extends BaseEntity {
 
 	public void startDas(final int passage) {
 		if (this.status == RoundStatus.PICK) {
-			this.status = RoundStatus.DAS;
 			this.passage = passage;
 		}
 	}
