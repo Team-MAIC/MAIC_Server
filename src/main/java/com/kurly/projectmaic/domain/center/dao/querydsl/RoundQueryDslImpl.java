@@ -93,8 +93,7 @@ public class RoundQueryDslImpl implements RoundQueryDsl {
 			.from(round)
 			.where(
 				round.centerId.eq(centerId),
-				round.passage.eq(passage),
-				round.status.eq(RoundStatus.DAS)
+				round.passage.eq(passage)
 			)
 			.orderBy(round.roundId.desc())
 			.limit(1)
