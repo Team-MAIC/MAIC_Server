@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 import com.kurly.projectmaic.domain.das.dao.RedisBasketRepository;
 import com.kurly.projectmaic.domain.das.dto.querydsl.ProductsColorDto;
 import com.kurly.projectmaic.domain.das.dto.response.*;
+import com.kurly.projectmaic.domain.model.StatusType;
+import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
+import com.kurly.projectmaic.domain.pick.domain.PickTodo;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +58,7 @@ public class DasTodoService {
 	private final ProductRepository productRepository;
 	private final RedisPublisher publisher;
 	private final RedisBasketRepository redisBasketRepository;
+	private final PickTodoRepository pickTodoRepository;
 
 	@Transactional
 	public DasTodoSummaryResponse refreshDasTodos(final long centerID, final int passage) {
@@ -204,6 +208,13 @@ public class DasTodoService {
 			.orElseThrow(() ->
 				new RoundNotFoundException(NOT_FOUND_ROUND, String.format("roundId : {}", roundId)));
 
+		PickTodo pickTodo = pickTodoRepository.getPickTodo(roundId, productId);
+
+		if (pickTodo.getStatus() != StatusType.FINISH) {
+			throw new DasNotFoundException(ResponseCode.NOT_DONE_PICK_TODO,
+				String.format("pickTodoId : {}", pickTodo.getPickTodoId()));
+		}
+
 		List<ProductsColorDto> colors = dasTodoRepository.getUsedColor(roundId);
 
 		List<BasketColor> basketColors = colors.stream()
@@ -275,5 +286,11 @@ public class DasTodoService {
 					RedisChannelUtils.getDasTodoTopicName(centerId, passage) + "/" + i)
 			);
 		}
+	}
+
+	public DasTodo getDasTodoInfo(final long todoId) {
+		return dasTodoRepository.findByDasTodoId(todoId)
+			.orElseThrow(() -> new DasNotFoundException(ResponseCode.NOT_FOUND_DAS,
+				String.format("DasTodoId : %s", todoId)));
 	}
 }

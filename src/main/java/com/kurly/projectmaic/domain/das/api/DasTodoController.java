@@ -1,6 +1,7 @@
 package com.kurly.projectmaic.domain.das.api;
 
 import com.kurly.projectmaic.domain.das.application.DasTodoService;
+import com.kurly.projectmaic.domain.das.domain.DasTodo;
 import com.kurly.projectmaic.domain.das.dto.request.BasketsMappingRequest;
 import com.kurly.projectmaic.domain.das.dto.request.DasTodoSubscribeRequest;
 import com.kurly.projectmaic.domain.das.dto.response.BasketsInfoResponse;
@@ -50,5 +51,12 @@ public class DasTodoController {
 	) {
 		dasTodoService.updateColor(roundId, productId);
 		return CustomResponseEntity.success();
+	}
+
+	@GetMapping("/info/{todoId}")
+	public CustomResponseEntity<DasTodo> getDasTodoInfo(
+		@PathVariable final long todoId
+	) {
+		return CustomResponseEntity.success(dasTodoService.getDasTodoInfo(todoId));
 	}
 }
