@@ -1,79 +1,37 @@
+
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Chat WebSocket</title>
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-
-    <script type="text/javascript">
-        var stompClient = null;
-
-        function setConnected(connected) {
-            document.getElementById('connect').disabled = connected;
-            document.getElementById('disconnect').disabled = !connected;
-            document.getElementById('conversationDiv').style.visibility
-                = connected ? 'visible' : 'hidden';
-            document.getElementById('response').innerHTML = '';
-        }
-
-        function connect() {
-            var socket = new SockJS('/wss');
-            stompClient = Stomp.over(socket);
-            stompClient.connect({workerId: "1"}, function(frame) {
-                setConnected(true);
-                console.log('Connected: ' + frame);
-                stompClient.subscribe('/sub/pick/todos/1/A', function(messageOutput) {
-                    showMessageOutput(JSON.parse(messageOutput.body));
-                });
-
-                stompClient.subscribe('/worker/1/pick/todos/1/A', function(messageOutput) {
-                    showMessageOutput(JSON.parse(messageOutput.body));
-                });
-            });
-        }
-
-        function disconnect() {
-            if(stompClient != null) {
-                stompClient.disconnect();
-            }
-            setConnected(false);
-            console.log("Disconnected");
-        }
-
-        function sendMessage() {
-            var from = document.getElementById('from').value;
-            var text = document.getElementById('text').value;
-            stompClient.send("/pub/pick/todos/1/A", {"worker-id": "1"},{});
-        }
-
-        function showMessageOutput(messageOutput) {
-            var response = document.getElementById('response');
-            var p = document.createElement('p');
-            p.style.wordWrap = 'break-word';
-            p.appendChild(document.createTextNode(messageOutput.from + ": "
-                + messageOutput.text + " (" + messageOutput.time + ")"));
-            response.appendChild(p);
-        }
-    </script>
+    <title>Baskets Test</title>
+    <meta charset="UTF-8">
+    <script src="./js/sockjs.min.js" type="text/javascript"></script>
+    <script src="./js/stomp.min.js" type="text/javascript"></script>
+    <script src="./js/app.js" type="text/javascript"></script>
 </head>
-<body onload="disconnect()">
-<div>
-    <div>
-        <input type="text" id="from" placeholder="Choose a nickname"/>
-    </div>
-    <br />
-    <div>
-        <button id="connect" onclick="connect();">Connect</button>
-        <button id="disconnect" disabled="disabled" onclick="disconnect();">
-            Disconnect
-        </button>
-    </div>
-    <br />
-    <div id="conversationDiv">
-        <input type="text" id="text" placeholder="Write a message..."/>
-        <button id="sendMessage" onclick="sendMessage();">Send</button>
-        <p id="response"></p>
-    </div>
-</div>
 
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<br>
+<label for="connect">바구니 연결:</label>
+<input type="text" id="centerId" class="form-control" placeholder="CenterID">
+<input type="text" id="passage" class="form-control" placeholder="Passage">
+<input type="text" id="basketNum" class="form-control" placeholder="BasketNumber">
+<button id="connect" class="btn btn-default" onclick="connect()">Connect</button>
+<button id="disconnect" class="btn btn-default" disabled="disabled" onclick="disconnect()">Disconnect</button>
+<br>
+<label for="connect">바구니 상태:</label><br>
+dasTodoId : <input type="text" id="dasTodoId" class="form-control" disabled><br>
+roundId : <input type="text" id="roundId" class="form-control" disabled><br>
+productId : <input type="text" id="productId" class="form-control" disabled><br>
+productName : <input type="text" id="productName" class="form-control" disabled><br>
+basketWeight : <input type="text" id="basketWeight" class="form-control" disabled><br>
+productAmount : <input type="text" id="productAmount" class="form-control" disabled><br>
+productWeight : <input type="text" id="productWeight" class="form-control" disabled><br>
+status : <input type="text" id="status" class="form-control" disabled><br>
+color : <input type="text" id="color" class="form-control" disabled>
+<br>
+현재 무게 : <input type="text" id="currentBasketWeight" class="form-control" onchange="weightChange()"> <button id="submit" class="btn btn-default" type="submit" onclick="submit()">Send</button>
 </body>
-</html>
+</html> 

@@ -119,7 +119,7 @@ public class DasTodoQueryDslImpl implements DasTodoQueryDsl {
 
 	private BooleanExpression eqStatus(BasketStatus status) {
 		if (status == BasketStatus.ALL) {
-			return dasTodo.status.isNotNull();
+			return dasTodo.status.ne(BasketStatus.FINISH);
 		}
 
 		return dasTodo.status.eq(status);

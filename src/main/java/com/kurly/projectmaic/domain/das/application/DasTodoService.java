@@ -221,6 +221,8 @@ public class DasTodoService {
 			.findFirst()
 			.orElseThrow(() -> new EveryBasketColorsUsedException(USED_EVERY_COLORS, ""));
 
+		dasTodoRepository.updateColor(roundId, productId, color);
+
 		var todos = dasTodoRepository.getDasTodos(roundId, BasketStatus.ALL, BasketColor.ALL);
 
 		Map<Integer, DasTodo> map = new HashMap<>();
@@ -256,8 +258,6 @@ public class DasTodoService {
 				CustomResponseEntity.basketInit(basketColorResponse)
 			);
 		}
-
-		dasTodoRepository.updateColor(roundId, productId, color);
 	}
 
 	public void subscribeSubTodo(final long centerId, final int passage) {
