@@ -287,10 +287,4 @@ public class DasTodoService {
 			);
 		}
 	}
-
-	public DasTodo getDasTodoInfo(final long todoId) {
-		return dasTodoRepository.findByDasTodoId(todoId)
-			.orElseThrow(() -> new DasNotFoundException(ResponseCode.NOT_FOUND_DAS,
-				String.format("DasTodoId : %s", todoId)));
-	}
 }

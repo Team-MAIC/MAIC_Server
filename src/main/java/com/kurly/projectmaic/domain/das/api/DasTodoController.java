@@ -52,11 +52,4 @@ public class DasTodoController {
 		dasTodoService.updateColor(roundId, productId);
 		return CustomResponseEntity.success();
 	}
-
-	@GetMapping("/info/{todoId}")
-	public CustomResponseEntity<DasTodo> getDasTodoInfo(
-		@PathVariable final long todoId
-	) {
-		return CustomResponseEntity.success(dasTodoService.getDasTodoInfo(todoId));
-	}
 }
