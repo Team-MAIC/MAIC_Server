@@ -16,6 +16,7 @@ import com.kurly.projectmaic.domain.das.dto.response.*;
 import com.kurly.projectmaic.domain.model.StatusType;
 import com.kurly.projectmaic.domain.pick.dao.PickTodoRepository;
 import com.kurly.projectmaic.domain.pick.domain.PickTodo;
+import com.kurly.projectmaic.domain.pick.exception.PickTodoNotFoundException;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -208,11 +209,12 @@ public class DasTodoService {
 			.orElseThrow(() ->
 				new RoundNotFoundException(NOT_FOUND_ROUND, String.format("roundId : {}", roundId)));
 
-		PickTodo pickTodo = pickTodoRepository.getPickTodo(roundId, productId);
+		PickTodo pickTodo = pickTodoRepository.findByRoundIdAndProductId(roundId, productId)
+			.orElseThrow(() ->
+				new PickTodoNotFoundException(NOT_FOUND_PICK_TODO, String.format("roundId : {}", roundId)));
 
 		if (pickTodo.getStatus() != StatusType.FINISH) {
-			throw new DasNotFoundException(ResponseCode.NOT_DONE_PICK_TODO,
-				String.format("pickTodoId : {}", pickTodo.getPickTodoId()));
+			throw new RoundNotFoundException(NOT_DONE_PICK_TODO, "");
 		}
 
 		List<ProductsColorDto> colors = dasTodoRepository.getUsedColor(roundId);
